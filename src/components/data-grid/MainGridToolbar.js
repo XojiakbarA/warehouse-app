@@ -3,20 +3,21 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import {GridToolbarContainer} from "@mui/x-data-grid";
 import {Button} from "@mui/material";
-const MainGridToolbar = ({ disabled, onEditButtonClick, onDeleteButtonClick }) => {
+const MainGridToolbar = ({ loading, disabledAddButton, disabled, onAddButtonClick, onEditButtonClick, onDeleteButtonClick }) => {
     return (
         <GridToolbarContainer>
             <Button
                 size={"small"}
                 startIcon={<AddIcon/>}
-                onClick={onEditButtonClick}
+                disabled={loading || disabledAddButton}
+                onClick={onAddButtonClick}
             >
                 Add
             </Button>
             <Button
                 size={"small"}
                 startIcon={<EditIcon/>}
-                disabled={disabled}
+                disabled={loading || disabled}
                 onClick={onEditButtonClick}
             >
                 Edit
@@ -24,7 +25,7 @@ const MainGridToolbar = ({ disabled, onEditButtonClick, onDeleteButtonClick }) =
             <Button
                 size={"small"}
                 startIcon={<DeleteIcon/>}
-                disabled={disabled}
+                disabled={loading || disabled}
                 onClick={onDeleteButtonClick}
             >
                 Delete
