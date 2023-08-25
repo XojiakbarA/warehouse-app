@@ -6,9 +6,8 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import DashboardIcon from '@mui/icons-material/Dashboard';
+import WarehouseIcon from '@mui/icons-material/Warehouse';
 import {Link} from "react-router-dom";
 
 const MainDrawer = ({ open, onDrawerClose }) => {
@@ -34,18 +33,16 @@ const MainDrawer = ({ open, onDrawerClose }) => {
                         </ListItemButton>
                     </ListItem>
                 </List>
-                <Divider />
+                <Divider/>
                 <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to={"/warehouses"}>
+                            <ListItemIcon>
+                                <WarehouseIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Warehouses"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </List>
             </Box>
         </Drawer>
