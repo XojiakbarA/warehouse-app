@@ -8,6 +8,8 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import {Link} from "react-router-dom";
 
 const MainDrawer = ({ open, onDrawerClose }) => {
 
@@ -23,16 +25,14 @@ const MainDrawer = ({ open, onDrawerClose }) => {
                 onKeyDown={onDrawerClose}
             >
                 <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-                        <ListItem key={text} disablePadding>
-                            <ListItemButton>
-                                <ListItemIcon>
-                                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                                </ListItemIcon>
-                                <ListItemText primary={text} />
-                            </ListItemButton>
-                        </ListItem>
-                    ))}
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to={"/"}>
+                            <ListItemIcon>
+                                <DashboardIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Dashboard"}/>
+                        </ListItemButton>
+                    </ListItem>
                 </List>
                 <Divider />
                 <List>

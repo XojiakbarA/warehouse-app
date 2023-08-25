@@ -20,7 +20,6 @@ const MainLayout = () => {
         <>
             <MainAppBar onMenuIconClick={toggleDrawer}/>
             <MainDrawer open={open} onDrawerClose={toggleDrawer}/>
-            <Toolbar/>
             <Container maxWidth={"xl"}>
                 <Outlet/>
             </Container>
