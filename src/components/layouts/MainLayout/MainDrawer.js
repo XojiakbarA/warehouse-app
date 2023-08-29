@@ -9,6 +9,7 @@ import ListItemText from '@mui/material/ListItemText';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import CategoryIcon from '@mui/icons-material/Category';
+import SettingsIcon from '@mui/icons-material/Settings';
 import {Link} from "react-router-dom";
 
 const MainDrawer = ({ open, onDrawerClose }) => {
@@ -31,6 +32,16 @@ const MainDrawer = ({ open, onDrawerClose }) => {
                                 <DashboardIcon/>
                             </ListItemIcon>
                             <ListItemText primary={"Dashboard"}/>
+                        </ListItemButton>
+                    </ListItem>
+                </List>
+                <List>
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to={"/settings"}>
+                            <ListItemIcon>
+                                <SettingsIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Settings"}/>
                         </ListItemButton>
                     </ListItem>
                 </List>

@@ -34,3 +34,21 @@ export const deleteCategory = async (id) => {
 export const searchCategoriesByName = async (name) => {
     return await instance.get("/categories/search", { params: { name } })
 }
+
+
+
+export const fetchCurrencies = async () => {
+    return await instance.get("/currencies")
+}
+export const saveCurrency = async (data) => {
+    return await instance.post("/currencies", data)
+}
+export const updateCurrency = async (id, data) => {
+    return await instance.put("/currencies/" + id, data)
+}
+export const deleteCurrency = async (id) => {
+    return await instance.delete("/currencies/" + id)
+}
+export const fetchAvailableCurrencies = async (name) => {
+    return await instance.get("/currencies/available", { params: { name } })
+}

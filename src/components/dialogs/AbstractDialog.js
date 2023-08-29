@@ -1,13 +1,13 @@
 import {Button, Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel, Stack, TextField} from "@mui/material";
 import { useFormik } from "formik";
-import { warehouseValidationSchema } from "../../utils/validate";
+import { mainValidationSchema } from "../../utils/validate";
 import { LoadingButton } from "@mui/lab";
 
 const AbstractDialog = ({ title, open, onClose, initialValues, onSubmit, loading }) => {
 
     const {handleSubmit, getFieldProps, touched, errors, values, handleChange, handleBlur} = useFormik({
         initialValues,
-        validationSchema: warehouseValidationSchema,
+        validationSchema: mainValidationSchema,
         enableReinitialize: true,
         onSubmit
     })

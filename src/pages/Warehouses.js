@@ -125,7 +125,7 @@ const Warehouses = () => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Typography variant={"h4"} color={"primary"}>Warehouses</Typography>
+                <Typography variant={"h4"} color={"primary"} marginTop>Warehouses</Typography>
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
