@@ -26,29 +26,7 @@ export const mainColumns = [
 ]
 
 export const categoryColumns = [
-    {
-        field: 'id',
-        headerName: 'ID',
-        type: "number",
-        filterable: false,
-        sortable: false
-    },
-    {
-        field: 'name',
-        minWidth: 200,
-        headerName: "Name",
-        type: "string",
-        filterable: false,
-        sortable: false
-    },
-    {
-        field: 'active',
-        minWidth: 200,
-        headerName: "Active",
-        type: "boolean",
-        filterable: false,
-        sortable: false
-    },
+    ...mainColumns,
     {
         field: 'parentCategory',
         minWidth: 200,
@@ -62,6 +40,18 @@ export const categoryColumns = [
             }
             return "-"
         }
+    }
+]
+
+export const supplierClientColumns = [
+    ...mainColumns,
+    {
+        field: 'phoneNumber',
+        minWidth: 200,
+        headerName: "Phone Number",
+        type: "string",
+        filterable: false,
+        sortable: false
     }
 ]
 

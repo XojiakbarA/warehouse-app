@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-    baseURL: "http://localhost:8080"
+    baseURL: "https://ominous-space-invention-v7pj6w9vj79hpp6x-8080.app.github.dev"
 })
 
 export const fetchWarehouses = async (params) => {
@@ -66,4 +66,19 @@ export const updateMeasurement = async (id, data) => {
 }
 export const deleteMeasurement = async (id) => {
     return await instance.delete("/measurements/" + id)
+}
+
+
+
+export const fetchSuppliers = async (params) => {
+    return await instance.get("/suppliers", { params })
+}
+export const saveSupplier = async (data) => {
+    return await instance.post("/suppliers", data)
+}
+export const updateSupplier = async (id, data) => {
+    return await instance.put("/suppliers/" + id, data)
+}
+export const deleteSupplier = async (id) => {
+    return await instance.delete("/suppliers/" + id)
 }
