@@ -1,10 +1,5 @@
 import {Grid, Paper} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import Alert from "@mui/material/Alert";
-import IconButton from "@mui/material/IconButton";
-import CloseIcon from "@mui/icons-material/Close";
-import AlertTitle from "@mui/material/AlertTitle";
-import Collapse from "@mui/material/Collapse";
 import {useCallback, useEffect, useState} from "react";
 import {DataGrid} from "@mui/x-data-grid";
 import MainGridToolbar from "../components/data-grid/MainGridToolbar";
@@ -13,6 +8,7 @@ import {useSearchParams} from "react-router-dom";
 import {deleteCategory, fetchCategories, saveCategory, updateCategory} from "../api";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import CategoryDialog from "../components/dialogs/CategoryDialog";
+import MainAlert from "../components/alerts/MainAlert";
 
 const Categories = () => {
 
@@ -139,42 +135,12 @@ const Categories = () => {
                 <Typography variant={"h4"} color={"primary"}>Categories</Typography>
             </Grid>
             <Grid item xs={12}>
-                <Collapse in={Boolean(error)}>
-                    <Alert
-                        severity="error"
-                        action={
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                onClick={() => setError(null)}
-                            >
-                                <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                        }
-                    >
-                        <AlertTitle>Error</AlertTitle>
-                        {error}
-                    </Alert>
-                </Collapse>
-                <Collapse in={Boolean(success)}>
-                    <Alert
-                        severity="success"
-                        action={
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                onClick={() => setSuccess(null)}
-                            >
-                                <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                        }
-                    >
-                        <AlertTitle>Success</AlertTitle>
-                        {success}
-                    </Alert>
-                </Collapse>
+                <MainAlert
+                    error={error}
+                    onErrorCloseClick={() => setError(null)}
+                    success={success}
+                    onSuccessCloseClick={() => setSuccess(null)}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Paper>

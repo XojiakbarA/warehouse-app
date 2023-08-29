@@ -7,12 +7,8 @@ import AbstractDialog from "../components/dialogs/AbstractDialog";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import {deleteWarehouse, fetchWarehouses, saveWarehouse, updateWarehouse} from "../api";
 import {useSearchParams} from "react-router-dom";
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
 import {mainColumns, pageSizeOptions} from "../utils/constants";
+import MainAlert from "../components/alerts/MainAlert";
 
 const Warehouses = () => {
 
@@ -22,24 +18,25 @@ const Warehouses = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
-    const [data, setData] = useState({ content: [], rowCount: 0})
+    const [success, setSuccess] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [warehouses, setWarehouses] = useState([])
+    const [rowCount, setRowCount] = useState(0)
     const [addDialogOpen, setAddDialogOpen] = useState(false)
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
     const [rowSelectionModel, setRowSelectionModel] = useState([])
-    const warehouse = data?.content.find(w => w.id === rowSelectionModel[0]) || null
+    const [warehouse, setWarehouse] = useState(null)
 
     const getWarehouses = useCallback(async () => {
         setLoading(true)
         try {
             const params = {page: paginationModel.page, size: paginationModel.pageSize}
             const { data } = await fetchWarehouses(params)
-            const content = data.data.content
-            const rowCount = data.data.totalElements
-            setData({ content, rowCount })
+            setWarehouses(data.data.content)
+            setRowCount(data.data.totalElements)
         } catch (e) {
             console.log(e)
             setError(e.response?.data?.message)
@@ -50,10 +47,13 @@ const Warehouses = () => {
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
         try {
-            await saveWarehouse(data)
-            await getWarehouses()
-            toggleAddDialog()
-            resetForm()
+            const res = await saveWarehouse(data)
+            if (res.status === 201) {
+                await getWarehouses()
+                toggleAddDialog()
+                resetForm()
+                setSuccess("Warehouse created successfully")
+            }
         } catch (e) {
             console.log(e)
             setError(e.response?.data?.message)
@@ -63,11 +63,14 @@ const Warehouses = () => {
     const handleEditSubmit = async (data, { resetForm }) => {
         setLoading(true)
         try {
-            await updateWarehouse(warehouse?.id, data)
-            await getWarehouses()
-            toggleEditDialog()
-            resetForm()
-            setRowSelectionModel([])
+            const res = await updateWarehouse(warehouse?.id, data)
+            if (res.status === 200) {
+                await getWarehouses()
+                toggleEditDialog()
+                resetForm()
+                setRowSelectionModel([])
+                setSuccess("Warehouse updated successfully")
+            }
         } catch (e) {
             console.log(e)
             setError(e.response?.data?.message)
@@ -77,10 +80,13 @@ const Warehouses = () => {
     const handleDeleteClick = async () => {
         setLoading(true)
         try {
-            await deleteWarehouse(warehouse?.id)
-            await getWarehouses()
-            toggleDeleteDialog()
-            setRowSelectionModel([])
+            const res = await deleteWarehouse(warehouse?.id)
+            if (res.status === 202) {
+                await getWarehouses()
+                toggleDeleteDialog()
+                setRowSelectionModel([])
+                setSuccess("Warehouse deleted successfully")
+            }
         } catch (e) {
             console.log(e)
             setError(e.response.data.message)
@@ -91,8 +97,11 @@ const Warehouses = () => {
     const handleRowSelectionModelChange = (r) => {
         setRowSelectionModel(i => {
             if (i[0] === r[0]) {
+                setWarehouse(null)
                 return []
             }
+            const warehouse = warehouses.find(w => w.id === r[0])
+            setWarehouse(warehouse || null)
             return r
         })
     }
@@ -119,24 +128,12 @@ const Warehouses = () => {
                 <Typography variant={"h4"} color={"primary"}>Warehouses</Typography>
             </Grid>
             <Grid item xs={12}>
-                <Collapse in={Boolean(error)}>
-                    <Alert
-                        severity="error"
-                        action={
-                            <IconButton
-                                aria-label="close"
-                                color="inherit"
-                                size="small"
-                                onClick={() => setError(null)}
-                            >
-                                <CloseIcon fontSize="inherit" />
-                            </IconButton>
-                        }
-                    >
-                        <AlertTitle>Error</AlertTitle>
-                        {error}
-                    </Alert>
-                </Collapse>
+                <MainAlert
+                    error={error}
+                    onErrorCloseClick={() => setError(null)}
+                    success={success}
+                    onSuccessCloseClick={() => setSuccess(null)}
+                />
             </Grid>
             <Grid item xs={12}>
                 <Paper>
@@ -145,10 +142,10 @@ const Warehouses = () => {
                         disableColumnMenu
                         loading={loading}
                         columns={mainColumns}
-                        rows={data.content}
+                        rows={warehouses}
                         paginationMode={"server"}
                         paginationModel={paginationModel}
-                        rowCount={data.rowCount}
+                        rowCount={rowCount}
                         rowSelectionModel={rowSelectionModel}
                         onRowSelectionModelChange={handleRowSelectionModelChange}
                         pageSizeOptions={pageSizeOptions}
