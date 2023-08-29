@@ -3,6 +3,7 @@ import Typography from "@mui/material/Typography";
 import MainAlert from "../components/alerts/MainAlert";
 import {useState} from "react";
 import CurrencyList from "../components/lists/CurrencyList";
+import MeasurementList from "../components/lists/MeasurementList";
 
 const Settings = () => {
 
@@ -24,6 +25,12 @@ const Settings = () => {
             </Grid>
             <Grid item xs={4}>
                 <CurrencyList
+                    setError={setError}
+                    setSuccess={setSuccess}
+                />
+            </Grid>
+            <Grid item xs={4}>
+                <MeasurementList
                     setError={setError}
                     setSuccess={setSuccess}
                 />

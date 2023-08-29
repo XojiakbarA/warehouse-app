@@ -52,3 +52,18 @@ export const deleteCurrency = async (id) => {
 export const fetchAvailableCurrencies = async (name) => {
     return await instance.get("/currencies/available", { params: { name } })
 }
+
+
+
+export const fetchMeasurements = async () => {
+    return await instance.get("/measurements")
+}
+export const saveMeasurement = async (data) => {
+    return await instance.post("/measurements", data)
+}
+export const updateMeasurement = async (id, data) => {
+    return await instance.put("/measurements/" + id, data)
+}
+export const deleteMeasurement = async (id) => {
+    return await instance.delete("/measurements/" + id)
+}
