@@ -5,6 +5,7 @@ import Dashboard from "./pages/Dashboard";
 import Warehouses from "./pages/Warehouses";
 import Categories from "./pages/Categories";
 import Settings from "./pages/Settings";
+import Suppliers from "./pages/Suppliers";
 
 function App() {
 
@@ -19,6 +20,7 @@ function App() {
                     <Route path={"/warehouses"} element={<Warehouses/>}/>
                     <Route path={"/categories"} element={<Categories/>}/>
                     <Route path={"/settings"} element={<Settings/>}/>
+                    <Route path={"/suppliers"} element={<Suppliers/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

@@ -67,3 +67,18 @@ export const updateMeasurement = async (id, data) => {
 export const deleteMeasurement = async (id) => {
     return await instance.delete("/measurements/" + id)
 }
+
+
+
+export const fetchSuppliers = async (params) => {
+    return await instance.get("/suppliers", { params })
+}
+export const saveSupplier = async (data) => {
+    return await instance.post("/suppliers", data)
+}
+export const updateSupplier = async (id, data) => {
+    return await instance.put("/suppliers/" + id, data)
+}
+export const deleteSupplier = async (id) => {
+    return await instance.delete("/suppliers/" + id)
+}

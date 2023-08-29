@@ -10,6 +10,7 @@ import DashboardIcon from '@mui/icons-material/Dashboard';
 import WarehouseIcon from '@mui/icons-material/Warehouse';
 import CategoryIcon from '@mui/icons-material/Category';
 import SettingsIcon from '@mui/icons-material/Settings';
+import GroupIcon from '@mui/icons-material/Group';
 import {Link} from "react-router-dom";
 
 const MainDrawer = ({ open, onDrawerClose }) => {
@@ -63,6 +64,16 @@ const MainDrawer = ({ open, onDrawerClose }) => {
                                 <CategoryIcon/>
                             </ListItemIcon>
                             <ListItemText primary={"Categories"}/>
+                        </ListItemButton>
+                    </ListItem>
+                </List>
+                <List>
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to={"/suppliers"}>
+                            <ListItemIcon>
+                                <GroupIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Suppliers"}/>
                         </ListItemButton>
                     </ListItem>
                 </List>
