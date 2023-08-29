@@ -34,3 +34,12 @@ export const deleteCategory = async (id) => {
 export const searchCategoriesByName = async (name) => {
     return await instance.get("/categories/search", { params: { name } })
 }
+
+
+
+export const fetchCurrencies = async () => {
+    return await instance.get("/currencies")
+}
+export const fetchAvailableCurrencies = async (name) => {
+    return await instance.get("/currencies/available", { params: { name } })
+}

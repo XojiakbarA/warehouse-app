@@ -1,58 +1,40 @@
-import {
-    Button,
-    Checkbox,
-    Dialog,
-    DialogContent,
-    DialogTitle,
-    FormControlLabel,
-    Stack,
-    TextField
-} from "@mui/material";
-import {LoadingButton} from "@mui/lab";
+import {Button, Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel, Stack} from "@mui/material";
 import {useFormik} from "formik";
-import {mainValidationSchema} from "../../utils/validate";
+import {currencyValidationSchema} from "../../utils/validate";
 import MainAutocomplete from "../inputs/MainAutocomplete";
-import {searchCategoriesByName} from "../../api";
+import {useState} from "react";
+import {fetchAvailableCurrencies} from "../../api";
+import {LoadingButton} from "@mui/lab";
 
-const CategoryDialog = ({ title, open, onClose, initialValues, onSubmit, loading, parentCategory, setParentCategory }) => {
+const CurrencyDialog = ({ open, title, loading, onClose, onSubmit, currency, setCurrency }) => {
 
-    const {
-        handleSubmit,
-        getFieldProps, touched, errors, values,
-        handleChange, handleBlur, setFieldValue
-    } = useFormik({
-        initialValues,
-        validationSchema: mainValidationSchema,
+    const { handleSubmit, handleChange, handleBlur,
+        values, setFieldValue } = useFormik({
+        initialValues: {
+            active: true,
+            currencyCode: ""
+        },
+        validationSchema: currencyValidationSchema,
         enableReinitialize: true,
         onSubmit
     })
 
     const handleParentCategoryChange = (e, v) => {
         if (v === null) {
-            setParentCategory(null)
-            setFieldValue("parentCategoryId", null)
+            setCurrency(null)
+            setFieldValue("currencyCode", null)
         } else {
-            setParentCategory(v)
-            setFieldValue("parentCategoryId", v.id)
+            setCurrency(v)
+            setFieldValue("currencyCode", v.currencyCode)
         }
     }
 
-    return (
+    return(
         <Dialog open={open} onClose={loading ? null : onClose} maxWidth={"xs"} fullWidth>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit}>
                     <Stack spacing={2}>
-                        <TextField
-                            disabled={loading}
-                            label="Name"
-                            type="text"
-                            fullWidth
-                            variant="standard"
-                            error={ touched.name && Boolean(errors.name) }
-                            helperText={ touched.name && errors.name }
-                            { ...getFieldProps('name') }
-                        />
                         <FormControlLabel
                             disabled={loading}
                             label="Active"
@@ -63,11 +45,13 @@ const CategoryDialog = ({ title, open, onClose, initialValues, onSubmit, loading
                             control={<Checkbox checked={values.active}/>}
                         />
                         <MainAutocomplete
-                            label={"Parent Category"}
-                            promise={searchCategoriesByName}
+                            label={"Currency"}
+                            promise={fetchAvailableCurrencies}
                             onChange={handleParentCategoryChange}
-                            value={parentCategory}
+                            value={currency}
                             loading={loading}
+                            getOptionLabel={ (option) => option.currencyCode + " (" + option.currencyName + ")" }
+                            isOptionEqualToValue={ (o, v) => o.currencyCode === v.currencyCode }
                         />
                         <Stack direction={"row"} spacing={2}>
                             <Button onClick={onClose} disabled={loading}>Cancel</Button>
@@ -80,4 +64,4 @@ const CategoryDialog = ({ title, open, onClose, initialValues, onSubmit, loading
     )
 }
 
-export default CategoryDialog
+export default CurrencyDialog

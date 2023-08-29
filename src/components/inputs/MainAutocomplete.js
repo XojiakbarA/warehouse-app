@@ -2,7 +2,7 @@ import {Autocomplete, CircularProgress, TextField} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDebounce} from "../../hooks/useDebounce";
 
-const MainAutocomplete = ({ label, promise, onChange, value, loading }) => {
+const MainAutocomplete = ({ label, promise, onChange, value, loading, getOptionLabel, isOptionEqualToValue }) => {
 
     const [inputValue, setInputValue] = useState("")
     const [fetchLoading, setFetchLoading] = useState(false)
@@ -59,8 +59,8 @@ const MainAutocomplete = ({ label, promise, onChange, value, loading }) => {
                 />
             ) }
             options={options}
-            getOptionLabel={ (option) => option.name }
-            isOptionEqualToValue={(option, value) => option.id === value.id}
+            getOptionLabel={getOptionLabel ? getOptionLabel : (option) => option.name}
+            isOptionEqualToValue={isOptionEqualToValue ? isOptionEqualToValue : (option, value) => option.id === value.id}
             inputValue={inputValue}
             onInputChange={handleInputChange}
             value={value}
