@@ -3,6 +3,7 @@ import {Route, Routes} from "react-router";
 import MainLayout from "./components/layouts/MainLayout";
 import Dashboard from "./pages/Dashboard";
 import Warehouses from "./pages/Warehouses";
+import Categories from "./pages/Categories";
 
 function App() {
 
@@ -15,6 +16,7 @@ function App() {
                 <Route path={"/"} element={<MainLayout/>}>
                     <Route index element={<Dashboard/>}/>
                     <Route path={"/warehouses"} element={<Warehouses/>}/>
+                    <Route path={"/categories"} element={<Categories/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

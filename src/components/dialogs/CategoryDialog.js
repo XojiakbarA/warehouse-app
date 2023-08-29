@@ -1,19 +1,44 @@
-import {Button, Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel, Stack, TextField} from "@mui/material";
-import { useFormik } from "formik";
-import { warehouseValidationSchema } from "../../utils/validate";
-import { LoadingButton } from "@mui/lab";
+import {
+    Button,
+    Checkbox,
+    Dialog,
+    DialogContent,
+    DialogTitle,
+    FormControlLabel,
+    Stack,
+    TextField
+} from "@mui/material";
+import {LoadingButton} from "@mui/lab";
+import {useFormik} from "formik";
+import {warehouseValidationSchema} from "../../utils/validate";
+import MainAutocomplete from "../inputs/MainAutocomplete";
+import {searchCategoriesByName} from "../../api";
 
-const WarehouseDialog = ({ title, open, onClose, initialValues, onSubmit, loading }) => {
+const CategoryDialog = ({ title, open, onClose, initialValues, onSubmit, loading, parentCategory, setParentCategory }) => {
 
-    const {handleSubmit, getFieldProps, touched, errors, values, handleChange, handleBlur} = useFormik({
+    const {
+        handleSubmit,
+        getFieldProps, touched, errors, values,
+        handleChange, handleBlur, setFieldValue
+    } = useFormik({
         initialValues,
         validationSchema: warehouseValidationSchema,
         enableReinitialize: true,
         onSubmit
     })
 
+    const handleParentCategoryChange = (e, v) => {
+        if (v === null) {
+            setParentCategory(null)
+            setFieldValue("parentCategoryId", null)
+        } else {
+            setParentCategory(v)
+            setFieldValue("parentCategoryId", v.id)
+        }
+    }
+
     return (
-        <Dialog open={open} onClose={loading ? null : onClose} maxWidth={"xs"} fullWidth>
+        <Dialog open={open} onClose={loading ? null : onClose} maxWidth={"xs"} fullWidth keepMounted={false}>
             <DialogTitle>{title}</DialogTitle>
             <DialogContent>
                 <form onSubmit={handleSubmit}>
@@ -37,6 +62,13 @@ const WarehouseDialog = ({ title, open, onClose, initialValues, onSubmit, loadin
                             onBlur={handleBlur}
                             control={<Checkbox checked={values.active}/>}
                         />
+                        <MainAutocomplete
+                            label={"Parent Category"}
+                            promise={searchCategoriesByName}
+                            onChange={handleParentCategoryChange}
+                            value={parentCategory}
+                            loading={loading}
+                        />
                         <Stack direction={"row"} spacing={2}>
                             <Button onClick={onClose} disabled={loading}>Cancel</Button>
                             <LoadingButton type="submit" loading={loading}>Save</LoadingButton>
@@ -48,4 +80,4 @@ const WarehouseDialog = ({ title, open, onClose, initialValues, onSubmit, loadin
     )
 }
 
-export default WarehouseDialog
+export default CategoryDialog

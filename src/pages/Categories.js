@@ -1,20 +1,20 @@
-import Typography from "@mui/material/Typography";
 import {Grid, Paper} from "@mui/material";
+import Typography from "@mui/material/Typography";
+import Alert from "@mui/material/Alert";
+import IconButton from "@mui/material/IconButton";
+import CloseIcon from "@mui/icons-material/Close";
+import AlertTitle from "@mui/material/AlertTitle";
+import Collapse from "@mui/material/Collapse";
+import {useCallback, useEffect, useState} from "react";
 import {DataGrid} from "@mui/x-data-grid";
 import MainGridToolbar from "../components/data-grid/MainGridToolbar";
-import {useCallback, useEffect, useState} from "react";
-import AbstractDialog from "../components/dialogs/AbstractDialog";
-import DeleteDialog from "../components/dialogs/DeleteDialog";
-import {deleteWarehouse, fetchWarehouses, saveWarehouse, updateWarehouse} from "../api";
+import {categoryColumns, pageSizeOptions} from "../utils/constants";
 import {useSearchParams} from "react-router-dom";
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
-import CloseIcon from '@mui/icons-material/Close';
-import {mainColumns, pageSizeOptions} from "../utils/constants";
+import {deleteCategory, fetchCategories, saveCategory, updateCategory} from "../api";
+import DeleteDialog from "../components/dialogs/DeleteDialog";
+import CategoryDialog from "../components/dialogs/CategoryDialog";
 
-const Warehouses = () => {
+const Categories = () => {
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -22,24 +22,29 @@ const Warehouses = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [loading, setLoading] = useState(false)
+
     const [error, setError] = useState(null)
-    const [data, setData] = useState({ content: [], rowCount: 0})
+    const [success, setSuccess] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [categories, setCategories] = useState([])
+    const [rowCount, setRowCount] = useState(0)
+    const [rowSelectionModel, setRowSelectionModel] = useState([])
+
+    const [category, setCategory] = useState(null)
+
+    const [parentCategory, setParentCategory] = useState(null)
+
     const [addDialogOpen, setAddDialogOpen] = useState(false)
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
-    const [rowSelectionModel, setRowSelectionModel] = useState([])
-    const warehouse = data?.content.find(w => w.id === rowSelectionModel[0]) || null
-
-    const getWarehouses = useCallback(async () => {
+    const getCategories = useCallback(async () => {
         setLoading(true)
         try {
             const params = {page: paginationModel.page, size: paginationModel.pageSize}
-            const { data } = await fetchWarehouses(params)
-            const content = data.data.content
-            const rowCount = data.data.totalElements
-            setData({ content, rowCount })
+            const { data } = await fetchCategories(params)
+            setCategories(data.data.content)
+            setRowCount(data.data.totalElements)
         } catch (e) {
             console.log(e)
             setError(e.response?.data?.message)
@@ -50,10 +55,13 @@ const Warehouses = () => {
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
         try {
-            await saveWarehouse(data)
-            await getWarehouses()
-            toggleAddDialog()
-            resetForm()
+            const res = await saveCategory(data)
+            if (res.status === 201) {
+                await getCategories()
+                toggleAddDialog()
+                resetForm()
+                setSuccess("Category created successfully")
+            }
         } catch (e) {
             console.log(e)
             setError(e.response?.data?.message)
@@ -63,11 +71,14 @@ const Warehouses = () => {
     const handleEditSubmit = async (data, { resetForm }) => {
         setLoading(true)
         try {
-            await updateWarehouse(warehouse?.id, data)
-            await getWarehouses()
-            toggleEditDialog()
-            resetForm()
-            setRowSelectionModel([])
+            const res = await updateCategory(category?.id, data)
+            if (res.status === 200) {
+                await getCategories()
+                toggleEditDialog()
+                resetForm()
+                setRowSelectionModel([])
+                setSuccess("Category updated successfully")
+            }
         } catch (e) {
             console.log(e)
             setError(e.response?.data?.message)
@@ -77,10 +88,13 @@ const Warehouses = () => {
     const handleDeleteClick = async () => {
         setLoading(true)
         try {
-            await deleteWarehouse(warehouse?.id)
-            await getWarehouses()
-            toggleDeleteDialog()
-            setRowSelectionModel([])
+            const res = await deleteCategory(category?.id)
+            if (res.status === 202) {
+                await getCategories()
+                toggleDeleteDialog()
+                setRowSelectionModel([])
+                setSuccess("Category deleted successfully")
+            }
         } catch (e) {
             console.log(e)
             setError(e.response.data.message)
@@ -88,14 +102,6 @@ const Warehouses = () => {
         setLoading(false)
     }
 
-    const handleRowSelectionModelChange = (r) => {
-        setRowSelectionModel(i => {
-            if (i[0] === r[0]) {
-                return []
-            }
-            return r
-        })
-    }
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
@@ -105,18 +111,32 @@ const Warehouses = () => {
     const toggleDeleteDialog = () => {
         setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
     }
+
+    const handleRowSelectionModelChange = (r) => {
+        setRowSelectionModel(i => {
+            if (i[0] === r[0]) {
+                setCategory(null)
+                setParentCategory(null)
+                return []
+            }
+            const category = categories.find(c => c.id === r[0])
+            setCategory(category || null)
+            setParentCategory(category?.parentCategory || null)
+            return r
+        })
+    }
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
     }
 
     useEffect(() => {
-        getWarehouses()
-    }, [getWarehouses])
+        getCategories()
+    }, [getCategories])
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Typography variant={"h4"} color={"primary"}>Warehouses</Typography>
+                <Typography variant={"h4"} color={"primary"}>Categories</Typography>
             </Grid>
             <Grid item xs={12}>
                 <Collapse in={Boolean(error)}>
@@ -137,6 +157,24 @@ const Warehouses = () => {
                         {error}
                     </Alert>
                 </Collapse>
+                <Collapse in={Boolean(success)}>
+                    <Alert
+                        severity="success"
+                        action={
+                            <IconButton
+                                aria-label="close"
+                                color="inherit"
+                                size="small"
+                                onClick={() => setSuccess(null)}
+                            >
+                                <CloseIcon fontSize="inherit" />
+                            </IconButton>
+                        }
+                    >
+                        <AlertTitle>Success</AlertTitle>
+                        {success}
+                    </Alert>
+                </Collapse>
             </Grid>
             <Grid item xs={12}>
                 <Paper>
@@ -144,11 +182,11 @@ const Warehouses = () => {
                         autoHeight
                         disableColumnMenu
                         loading={loading}
-                        columns={mainColumns}
-                        rows={data.content}
+                        columns={categoryColumns}
+                        rows={categories}
                         paginationMode={"server"}
                         paginationModel={paginationModel}
-                        rowCount={data.rowCount}
+                        rowCount={rowCount}
                         rowSelectionModel={rowSelectionModel}
                         onRowSelectionModelChange={handleRowSelectionModelChange}
                         pageSizeOptions={pageSizeOptions}
@@ -158,7 +196,7 @@ const Warehouses = () => {
                             toolbar: {
                                 loading: loading,
                                 disabledAddButton: Boolean(error),
-                                disabled: !Boolean(warehouse),
+                                disabled: !Boolean(category),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: toggleEditDialog,
                                 onDeleteButtonClick: toggleDeleteDialog
@@ -168,27 +206,39 @@ const Warehouses = () => {
                     />
                 </Paper>
             </Grid>
-            <AbstractDialog
-                title={"Add Warehouse"}
+            <CategoryDialog
+                title={"Add Category"}
                 open={addDialogOpen}
                 onClose={toggleAddDialog}
-                initialValues={{ name: "", active: true }}
+                initialValues={{
+                    name: "",
+                    active: true,
+                    parentCategoryId: null
+                }}
                 onSubmit={handleCreateSubmit}
                 loading={loading}
+                parentCategory={parentCategory}
+                setParentCategory={setParentCategory}
             />
-            <AbstractDialog
-                title={"Edit Warehouse"}
+            <CategoryDialog
+                title={"Edit Category"}
                 open={editDialogOpen}
                 onClose={toggleEditDialog}
-                initialValues={{ name: warehouse?.name || "", active: warehouse?.active || false }}
+                initialValues={{
+                    name: category?.name || "",
+                    active: category?.active || false,
+                    parentCategoryId: category?.parentCategory?.id || null
+                }}
                 onSubmit={handleEditSubmit}
                 loading={loading}
+                parentCategory={parentCategory}
+                setParentCategory={setParentCategory}
             />
             <DeleteDialog
-                title={"Delete Warehouse"}
+                title={"Delete Category"}
                 open={deleteDialogOpen}
                 onClose={toggleDeleteDialog}
-                resourceName={warehouse?.name || ""}
+                resourceName={category?.name || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}
             />
@@ -196,4 +246,4 @@ const Warehouses = () => {
     )
 }
 
-export default Warehouses
+export default Categories
