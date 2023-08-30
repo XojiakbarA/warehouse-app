@@ -77,6 +77,16 @@ const MainDrawer = ({ open, onDrawerClose }) => {
                         </ListItemButton>
                     </ListItem>
                 </List>
+                <List>
+                    <ListItem disablePadding>
+                        <ListItemButton component={Link} to={"/clients"}>
+                            <ListItemIcon>
+                                <GroupIcon/>
+                            </ListItemIcon>
+                            <ListItemText primary={"Clients"}/>
+                        </ListItemButton>
+                    </ListItem>
+                </List>
             </Box>
         </Drawer>
     )

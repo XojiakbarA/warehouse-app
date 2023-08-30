@@ -6,6 +6,7 @@ import Warehouses from "./pages/Warehouses";
 import Categories from "./pages/Categories";
 import Settings from "./pages/Settings";
 import Suppliers from "./pages/Suppliers";
+import Clients from "./pages/Clients";
 
 function App() {
 
@@ -21,6 +22,7 @@ function App() {
                     <Route path={"/categories"} element={<Categories/>}/>
                     <Route path={"/settings"} element={<Settings/>}/>
                     <Route path={"/suppliers"} element={<Suppliers/>}/>
+                    <Route path={"/clients"} element={<Clients/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>
