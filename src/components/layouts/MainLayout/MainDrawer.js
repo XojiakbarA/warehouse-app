@@ -12,9 +12,24 @@ import CategoryIcon from '@mui/icons-material/Category';
 import SettingsIcon from '@mui/icons-material/Settings';
 import GroupIcon from '@mui/icons-material/Group';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import {Link} from "react-router-dom";
+import DownloadIcon from '@mui/icons-material/Download';
+import {Link, useLocation} from "react-router-dom";
 
+const list1 = [
+    { id: 1, title: "Dashboard", path: "/", icon: <DashboardIcon/> },
+    { id: 2, title: "Settings", path: "/settings", icon: <SettingsIcon/>},
+]
+const list2 = [
+    { id: 1, title: "Warehouses", path: "/warehouses", icon: <WarehouseIcon/> },
+    { id: 2, title: "Categories", path: "/categories", icon: <CategoryIcon/>},
+    { id: 3, title: "Suppliers", path: "/suppliers", icon: <GroupIcon/> },
+    { id: 4, title: "Clients", path: "/clients", icon: <GroupIcon/> },
+    { id: 5, title: "Products", path: "/products", icon: <ShoppingCartIcon/> },
+    { id: 6, title: "Inputs", path: "/inputs", icon: <DownloadIcon/> }
+]
 const MainDrawer = ({ open, onDrawerClose }) => {
+
+    const location = useLocation()
 
     return (
         <Drawer
@@ -28,75 +43,37 @@ const MainDrawer = ({ open, onDrawerClose }) => {
                 onKeyDown={onDrawerClose}
             >
                 <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/"}>
-                            <ListItemIcon>
-                                <DashboardIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Dashboard"}/>
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/settings"}>
-                            <ListItemIcon>
-                                <SettingsIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Settings"}/>
-                        </ListItemButton>
-                    </ListItem>
+                    {
+                        list1.map(i => (
+                            <ListItem disablePadding key={i.id}>
+                                <ListItemButton component={Link} to={i.path}>
+                                    <ListItemIcon>
+                                        {i.icon}
+                                    </ListItemIcon>
+                                    <ListItemText primary={i.title}/>
+                                </ListItemButton>
+                            </ListItem>
+                        ))
+                    }
                 </List>
                 <Divider/>
                 <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/warehouses"}>
-                            <ListItemIcon>
-                                <WarehouseIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Warehouses"}/>
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/categories"}>
-                            <ListItemIcon>
-                                <CategoryIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Categories"}/>
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/suppliers"}>
-                            <ListItemIcon>
-                                <GroupIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Suppliers"}/>
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/clients"}>
-                            <ListItemIcon>
-                                <GroupIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Clients"}/>
-                        </ListItemButton>
-                    </ListItem>
-                </List>
-                <List>
-                    <ListItem disablePadding>
-                        <ListItemButton component={Link} to={"/products"}>
-                            <ListItemIcon>
-                                <ShoppingCartIcon/>
-                            </ListItemIcon>
-                            <ListItemText primary={"Products"}/>
-                        </ListItemButton>
-                    </ListItem>
+                {
+                    list2.map(i => (
+                        <ListItem key={i.id} disablePadding>
+                            <ListItemButton
+                                component={Link}
+                                to={i.path}
+                                selected={location.pathname === i.path}
+                            >
+                                <ListItemIcon>
+                                    {i.icon}
+                                </ListItemIcon>
+                                <ListItemText primary={i.title}/>
+                            </ListItemButton>
+                        </ListItem>
+                    ))
+                }
                 </List>
             </Box>
         </Drawer>

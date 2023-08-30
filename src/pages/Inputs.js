@@ -1,17 +1,17 @@
-import Typography from "@mui/material/Typography";
-import {Grid, Paper} from "@mui/material";
-import {DataGrid} from "@mui/x-data-grid";
-import MainGridToolbar from "../components/data-grid/MainGridToolbar";
-import {useCallback, useEffect, useState} from "react";
-import DeleteDialog from "../components/dialogs/DeleteDialog";
-import {deleteSupplier, fetchSuppliers, saveSupplier, updateSupplier} from "../api";
 import {useSearchParams} from "react-router-dom";
 import {pageSizeOptions} from "../utils/constants";
+import {useCallback, useEffect, useState} from "react";
+import {deleteInput, fetchInputs, saveInput, updateInput} from "../api";
+import {Grid, Paper} from "@mui/material";
+import Typography from "@mui/material/Typography";
 import MainAlert from "../components/alerts/MainAlert";
-import SupplierClientDialog from "../components/dialogs/SupplierClientDialog";
-import {supplierClientColumns} from "../utils/columns/supplierClient";
+import {DataGrid} from "@mui/x-data-grid";
+import MainGridToolbar from "../components/data-grid/MainGridToolbar";
+import DeleteDialog from "../components/dialogs/DeleteDialog";
+import {inputColumns} from "../utils/columns/input";
+import InputDialog from "../components/dialogs/InputDialog";
 
-const Suppliers = () => {
+const Inputs = () => {
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -22,21 +22,25 @@ const Suppliers = () => {
     const [error, setError] = useState(null)
     const [success, setSuccess] = useState(null)
     const [loading, setLoading] = useState(false)
-    const [suppliers, setSuppliers] = useState([])
+    const [inputs, setInputs] = useState([])
     const [rowCount, setRowCount] = useState(0)
     const [addDialogOpen, setAddDialogOpen] = useState(false)
     const [editDialogOpen, setEditDialogOpen] = useState(false)
     const [deleteDialogOpen, setDeleteDialogOpen] = useState(false)
 
     const [rowSelectionModel, setRowSelectionModel] = useState([])
-    const [supplier, setSupplier] = useState(null)
+    const [input, setInput] = useState(null)
 
-    const getSuppliers = useCallback(async () => {
+    const [warehouse, setWarehouse] = useState(null)
+    const [supplier, setSupplier] = useState(null)
+    const [currency, setCurrency] = useState(null)
+
+    const getInputs = useCallback(async () => {
         setLoading(true)
         try {
             const params = {page: paginationModel.page, size: paginationModel.pageSize}
-            const { data } = await fetchSuppliers(params)
-            setSuppliers(data.data.content)
+            const { data } = await fetchInputs(params)
+            setInputs(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
             console.log(e)
@@ -48,12 +52,12 @@ const Suppliers = () => {
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
         try {
-            const res = await saveSupplier(data)
+            const res = await saveInput(data)
             if (res.status === 201) {
-                await getSuppliers()
+                await getInputs()
                 toggleAddDialog()
                 resetForm()
-                setSuccess("Supplier created successfully")
+                setSuccess("Input created successfully")
             }
         } catch (e) {
             console.log(e)
@@ -64,14 +68,17 @@ const Suppliers = () => {
     const handleEditSubmit = async (data, { resetForm }) => {
         setLoading(true)
         try {
-            const res = await updateSupplier(supplier?.id, data)
+            const res = await updateInput(input?.id, data)
             if (res.status === 200) {
-                await getSuppliers()
+                await getInputs()
                 toggleEditDialog()
                 resetForm()
                 setRowSelectionModel([])
+                setInput(null)
+                setWarehouse(null)
                 setSupplier(null)
-                setSuccess("Supplier updated successfully")
+                setCurrency(null)
+                setSuccess("Input updated successfully")
             }
         } catch (e) {
             console.log(e)
@@ -82,13 +89,16 @@ const Suppliers = () => {
     const handleDeleteClick = async () => {
         setLoading(true)
         try {
-            const res = await deleteSupplier(supplier?.id)
+            const res = await deleteInput(input?.id)
             if (res.status === 202) {
-                await getSuppliers()
+                await getInputs()
                 toggleDeleteDialog()
                 setRowSelectionModel([])
+                setInput(null)
+                setWarehouse(null)
                 setSupplier(null)
-                setSuccess("Supplier deleted successfully")
+                setCurrency(null)
+                setSuccess("Input deleted successfully")
             }
         } catch (e) {
             console.log(e)
@@ -100,11 +110,17 @@ const Suppliers = () => {
     const handleRowSelectionModelChange = (r) => {
         setRowSelectionModel(i => {
             if (i[0] === r[0]) {
+                setInput(null)
+                setWarehouse(null)
                 setSupplier(null)
+                setCurrency(null)
                 return []
             }
-            const supplier = suppliers.find(s => s.id === r[0])
-            setSupplier(supplier || null)
+            const input = inputs.find(w => w.id === r[0])
+            setInput(input || null)
+            setWarehouse(input?.warehouse || null)
+            setSupplier(input?.supplier || null)
+            setCurrency(input?.currency || null)
             return r
         })
     }
@@ -122,13 +138,13 @@ const Suppliers = () => {
     }
 
     useEffect(() => {
-        getSuppliers()
-    }, [getSuppliers])
+        getInputs()
+    }, [getInputs])
 
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Typography variant={"h4"} color={"primary"} marginTop>Suppliers</Typography>
+                <Typography variant={"h4"} color={"primary"} marginTop>Inputs</Typography>
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
@@ -144,8 +160,8 @@ const Suppliers = () => {
                         autoHeight
                         disableColumnMenu
                         loading={loading}
-                        columns={supplierClientColumns}
-                        rows={suppliers}
+                        columns={inputColumns}
+                        rows={inputs}
                         paginationMode={"server"}
                         paginationModel={paginationModel}
                         rowCount={rowCount}
@@ -158,7 +174,7 @@ const Suppliers = () => {
                             toolbar: {
                                 loading: loading,
                                 disabledAddButton: Boolean(error),
-                                disabled: !Boolean(supplier),
+                                disabled: !Boolean(input),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: toggleEditDialog,
                                 onDeleteButtonClick: toggleDeleteDialog
@@ -168,27 +184,51 @@ const Suppliers = () => {
                     />
                 </Paper>
             </Grid>
-            <SupplierClientDialog
-                title={"Add Supplier"}
+            <InputDialog
+                title={"Add Input"}
                 open={addDialogOpen}
                 onClose={toggleAddDialog}
-                initialValues={{ name: "", active: true, phoneNumber: "" }}
+                initialValues={{
+                    warehouseId: null,
+                    supplierId: null,
+                    currencyId: null,
+                    factureNumber : "",
+                    date: null
+                }}
                 onSubmit={handleCreateSubmit}
                 loading={loading}
+                warehouse={warehouse}
+                setWarehouse={setWarehouse}
+                supplier={supplier}
+                setSupplier={setSupplier}
+                currency={currency}
+                setCurrency={setCurrency}
             />
-            <SupplierClientDialog
-                title={"Edit Supplier"}
+            <InputDialog
+                title={"Edit Input"}
                 open={editDialogOpen}
                 onClose={toggleEditDialog}
-                initialValues={{ name: supplier?.name || "", active: supplier?.active || false, phoneNumber: supplier?.phoneNumber || "" }}
+                initialValues={{
+                    warehouseId: input?.warehouse?.id || null,
+                    supplierId: input?.supplier?.id || null,
+                    currencyId: input?.currency?.id || null,
+                    factureNumber : input?.factureNumber || "",
+                    date: input?.date || null
+                }}
                 onSubmit={handleEditSubmit}
                 loading={loading}
+                warehouse={warehouse}
+                setWarehouse={setWarehouse}
+                supplier={supplier}
+                setSupplier={setSupplier}
+                currency={currency}
+                setCurrency={setCurrency}
             />
             <DeleteDialog
-                title={"Delete Supplier"}
+                title={"Delete Input"}
                 open={deleteDialogOpen}
                 onClose={toggleDeleteDialog}
-                resourceName={supplier?.name || ""}
+                resourceName={input?.code || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}
             />
@@ -196,4 +236,4 @@ const Suppliers = () => {
     )
 }
 
-export default Suppliers
+export default Inputs

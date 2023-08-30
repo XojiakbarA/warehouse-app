@@ -3,12 +3,13 @@ import Typography from "@mui/material/Typography";
 import {useCallback, useEffect, useState} from "react";
 import {DataGrid} from "@mui/x-data-grid";
 import MainGridToolbar from "../components/data-grid/MainGridToolbar";
-import {categoryColumns, pageSizeOptions} from "../utils/constants";
+import {pageSizeOptions} from "../utils/constants";
 import {useSearchParams} from "react-router-dom";
 import {deleteCategory, fetchCategories, saveCategory, updateCategory} from "../api";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import CategoryDialog from "../components/dialogs/CategoryDialog";
 import MainAlert from "../components/alerts/MainAlert";
+import {categoryColumns} from "../utils/columns/category";
 
 const Categories = () => {
 
@@ -73,6 +74,8 @@ const Categories = () => {
                 toggleEditDialog()
                 resetForm()
                 setRowSelectionModel([])
+                setCategory(null)
+                setParentCategory(null)
                 setSuccess("Category updated successfully")
             }
         } catch (e) {
@@ -89,6 +92,8 @@ const Categories = () => {
                 await getCategories()
                 toggleDeleteDialog()
                 setRowSelectionModel([])
+                setCategory(null)
+                setParentCategory(null)
                 setSuccess("Category deleted successfully")
             }
         } catch (e) {

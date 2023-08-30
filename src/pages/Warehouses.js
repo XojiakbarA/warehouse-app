@@ -7,8 +7,9 @@ import AbstractDialog from "../components/dialogs/AbstractDialog";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import {deleteWarehouse, fetchWarehouses, saveWarehouse, updateWarehouse} from "../api";
 import {useSearchParams} from "react-router-dom";
-import {mainColumns, pageSizeOptions} from "../utils/constants";
+import {pageSizeOptions} from "../utils/constants";
 import MainAlert from "../components/alerts/MainAlert";
+import {mainColumns} from "../utils/columns/main";
 
 const Warehouses = () => {
 
@@ -69,6 +70,7 @@ const Warehouses = () => {
                 toggleEditDialog()
                 resetForm()
                 setRowSelectionModel([])
+                setWarehouse(null)
                 setSuccess("Warehouse updated successfully")
             }
         } catch (e) {
@@ -85,6 +87,7 @@ const Warehouses = () => {
                 await getWarehouses()
                 toggleDeleteDialog()
                 setRowSelectionModel([])
+                setWarehouse(null)
                 setSuccess("Warehouse deleted successfully")
             }
         } catch (e) {

@@ -8,6 +8,8 @@ import Settings from "./pages/Settings";
 import Suppliers from "./pages/Suppliers";
 import Clients from "./pages/Clients";
 import Products from "./pages/Products";
+import Inputs from "./pages/Inputs";
+import Input from "./pages/Input";
 
 function App() {
 
@@ -25,6 +27,8 @@ function App() {
                     <Route path={"/suppliers"} element={<Suppliers/>}/>
                     <Route path={"/clients"} element={<Clients/>}/>
                     <Route path={"/products"} element={<Products/>}/>
+                    <Route path={"/inputs"} element={<Inputs/>}/>
+                    <Route path={"/inputs/:id/input-products"} element={<Input/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

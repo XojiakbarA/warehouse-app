@@ -1,5 +1,5 @@
 import {useSearchParams} from "react-router-dom";
-import {pageSizeOptions, supplierClientColumns} from "../utils/constants";
+import {pageSizeOptions} from "../utils/constants";
 import {useCallback, useEffect, useState} from "react";
 import {deleteClient, fetchClients, saveClient, updateClient} from "../api";
 import {Grid, Paper} from "@mui/material";
@@ -9,6 +9,7 @@ import {DataGrid} from "@mui/x-data-grid";
 import MainGridToolbar from "../components/data-grid/MainGridToolbar";
 import SupplierClientDialog from "../components/dialogs/SupplierClientDialog";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
+import {supplierClientColumns} from "../utils/columns/supplierClient";
 
 const Clients = () => {
 
@@ -69,6 +70,7 @@ const Clients = () => {
                 toggleEditDialog()
                 resetForm()
                 setRowSelectionModel([])
+                setClient(null)
                 setSuccess("Client updated successfully")
             }
         } catch (e) {
@@ -85,6 +87,7 @@ const Clients = () => {
                 await getClients()
                 toggleDeleteDialog()
                 setRowSelectionModel([])
+                setClient(null)
                 setSuccess("Client deleted successfully")
             }
         } catch (e) {

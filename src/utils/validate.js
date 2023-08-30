@@ -34,3 +34,21 @@ export const productValidationSchema = yup.object({
         .number('Select Measurement')
         .required('Measurement is required')
 })
+
+export const inputValidationSchema = yup.object({
+    factureNumber: yup
+        .number('Enter Facture Number')
+        .required('Facture Number is required'),
+    date: yup
+        .string('Enter Date')
+        .required('Date is required'),
+    warehouseId: yup
+        .number('Select Warehouse')
+        .required('Warehouse is required'),
+    supplierId: yup
+        .number('Select Supplier')
+        .required('Supplier is required'),
+    currencyId: yup
+        .number('Select Currency')
+        .required('Currency is required')
+})

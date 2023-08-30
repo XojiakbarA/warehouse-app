@@ -1,5 +1,5 @@
 import {useSearchParams} from "react-router-dom";
-import {pageSizeOptions, productColumns} from "../utils/constants";
+import {pageSizeOptions} from "../utils/constants";
 import {useCallback, useEffect, useState} from "react";
 import {deleteProduct, fetchProducts, saveProduct, updateProduct} from "../api";
 import {Grid, Paper} from "@mui/material";
@@ -10,6 +10,7 @@ import MainGridToolbar from "../components/data-grid/MainGridToolbar";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import ProductDialog from "../components/dialogs/ProductDialog";
 import {appendToFormData} from "../utils/helper";
+import {productColumns} from "../utils/columns/product";
 
 const Products = () => {
 
@@ -78,6 +79,9 @@ const Products = () => {
                 toggleEditDialog()
                 resetForm()
                 setRowSelectionModel([])
+                setProduct(null)
+                setCategory(null)
+                setMeasurement(null)
                 setSuccess("Product updated successfully")
             }
         } catch (e) {
@@ -94,6 +98,9 @@ const Products = () => {
                 await getProducts()
                 toggleDeleteDialog()
                 setRowSelectionModel([])
+                setProduct(null)
+                setCategory(null)
+                setMeasurement(null)
                 setSuccess("Product deleted successfully")
             }
         } catch (e) {
