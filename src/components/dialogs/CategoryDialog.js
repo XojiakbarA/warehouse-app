@@ -11,8 +11,8 @@ import {
 import {LoadingButton} from "@mui/lab";
 import {useFormik} from "formik";
 import {mainValidationSchema} from "../../utils/validate";
-import MainAutocomplete from "../inputs/MainAutocomplete";
 import {searchCategoriesByName} from "../../api";
+import MainDebouncedAutocomplete from "../inputs/MainDebouncedAutocomplete";
 
 const CategoryDialog = ({ title, open, onClose, initialValues, onSubmit, loading, parentCategory, setParentCategory }) => {
 
@@ -62,7 +62,7 @@ const CategoryDialog = ({ title, open, onClose, initialValues, onSubmit, loading
                             onBlur={handleBlur}
                             control={<Checkbox checked={values.active}/>}
                         />
-                        <MainAutocomplete
+                        <MainDebouncedAutocomplete
                             label={"Parent Category"}
                             promise={searchCategoriesByName}
                             onChange={handleParentCategoryChange}

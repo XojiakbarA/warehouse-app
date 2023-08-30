@@ -97,3 +97,18 @@ export const updateClient = async (id, data) => {
 export const deleteClient = async (id) => {
     return await instance.delete("/clients/" + id)
 }
+
+
+
+export const fetchProducts = async (params) => {
+    return await instance.get("/products", { params })
+}
+export const saveProduct = async (data) => {
+    return await instance.post("/products", data)
+}
+export const updateProduct = async (id, data) => {
+    return await instance.put("/products/" + id, data)
+}
+export const deleteProduct = async (id) => {
+    return await instance.delete("/products/" + id)
+}

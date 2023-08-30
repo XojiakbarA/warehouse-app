@@ -7,6 +7,7 @@ import Categories from "./pages/Categories";
 import Settings from "./pages/Settings";
 import Suppliers from "./pages/Suppliers";
 import Clients from "./pages/Clients";
+import Products from "./pages/Products";
 
 function App() {
 
@@ -23,6 +24,7 @@ function App() {
                     <Route path={"/settings"} element={<Settings/>}/>
                     <Route path={"/suppliers"} element={<Suppliers/>}/>
                     <Route path={"/clients"} element={<Clients/>}/>
+                    <Route path={"/products"} element={<Products/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

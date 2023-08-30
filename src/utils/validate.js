@@ -22,3 +22,15 @@ export const supplierClientValidationSchema = yup.object({
         .min(9, "Must be exactly 9 digits")
         .max(9, "Must be exactly 9 digits"),
 })
+
+export const productValidationSchema = yup.object({
+    name: yup
+        .string('Enter Name')
+        .required('Name is required'),
+    categoryId: yup
+        .number('Select Category')
+        .required('Category is required'),
+    measurementId: yup
+        .number('Select Measurement')
+        .required('Measurement is required')
+})
