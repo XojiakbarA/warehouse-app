@@ -1,14 +1,9 @@
-import {Grid, ListSubheader, Paper, Stack} from "@mui/material";
+import {Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import MainAlert from "../components/alerts/MainAlert";
 import {useState} from "react";
-import List from "@mui/material/List";
-import ListItem from "@mui/material/ListItem";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import ListItemText from "@mui/material/ListItemText";
 import CurrencyList from "../components/lists/CurrencyList";
+import MeasurementList from "../components/lists/MeasurementList";
 
 const Settings = () => {
 
@@ -30,7 +25,14 @@ const Settings = () => {
             </Grid>
             <Grid item xs={4}>
                 <CurrencyList
-
+                    setError={setError}
+                    setSuccess={setSuccess}
+                />
+            </Grid>
+            <Grid item xs={4}>
+                <MeasurementList
+                    setError={setError}
+                    setSuccess={setSuccess}
                 />
             </Grid>
         </Grid>

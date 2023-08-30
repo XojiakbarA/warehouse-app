@@ -2,7 +2,6 @@ import {Button, Checkbox, Dialog, DialogContent, DialogTitle, FormControlLabel, 
 import {useFormik} from "formik";
 import {currencyValidationSchema} from "../../utils/validate";
 import MainAutocomplete from "../inputs/MainAutocomplete";
-import {useState} from "react";
 import {fetchAvailableCurrencies} from "../../api";
 import {LoadingButton} from "@mui/lab";
 
