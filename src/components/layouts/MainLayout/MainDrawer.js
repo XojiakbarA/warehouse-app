@@ -14,6 +14,7 @@ import GroupIcon from '@mui/icons-material/Group';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import DownloadIcon from '@mui/icons-material/Download';
 import UploadIcon from '@mui/icons-material/Upload';
+import PersonIcon from '@mui/icons-material/Person';
 import {Link, useLocation} from "react-router-dom";
 
 const list1 = [
@@ -28,6 +29,7 @@ const list2 = [
     { id: 5, title: "Products", path: "/products", icon: <ShoppingCartIcon/> },
     { id: 6, title: "Inputs", path: "/inputs", icon: <DownloadIcon/> },
     { id: 7, title: "Outputs", path: "/outputs", icon: <UploadIcon/> },
+    { id: 8, title: "Users", path: "/users", icon: <PersonIcon/> },
 ]
 const MainDrawer = ({ open, onDrawerClose }) => {
 

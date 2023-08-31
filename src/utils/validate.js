@@ -97,3 +97,41 @@ export const outputProductValidationSchema = yup.object({
         .number('Select Output')
         .required('Output is required')
 })
+
+export const userCreateValidationSchema = yup.object({
+    firstName: yup
+        .string('Enter First Name')
+        .required('First Name is required'),
+    lastName: yup
+        .string('Enter Last Name')
+        .required('Last Name is required'),
+    phoneNumber: yup
+        .string('Enter Phone Number')
+        .required('Phone Number is required')
+        .min(9, "Must be exactly 9 digits")
+        .max(9, "Must be exactly 9 digits"),
+    password: yup
+        .string('Enter Password')
+        .required('Password is required'),
+    warehouseIds: yup
+        .array()
+        .min(1, "Must be min 1 warehouses")
+        .required('Warehouses is required')
+})
+export const userEditValidationSchema = yup.object({
+    firstName: yup
+        .string('Enter First Name')
+        .required('First Name is required'),
+    lastName: yup
+        .string('Enter Last Name')
+        .required('Last Name is required'),
+    phoneNumber: yup
+        .string('Enter Phone Number')
+        .required('Phone Number is required')
+        .min(9, "Must be exactly 9 digits")
+        .max(9, "Must be exactly 9 digits"),
+    warehouseIds: yup
+        .array()
+        .min(1, "Must be min 1 warehouses")
+        .required('Warehouses is required')
+})

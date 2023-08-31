@@ -12,6 +12,7 @@ import Inputs from "./pages/Inputs";
 import Input from "./pages/Input";
 import Outputs from "./pages/Outputs";
 import Output from "./pages/Output";
+import Users from "./pages/Users";
 
 function App() {
 
@@ -33,6 +34,7 @@ function App() {
                     <Route path={"/inputs/:id/input-products"} element={<Input/>}/>
                     <Route path={"/outputs"} element={<Outputs/>}/>
                     <Route path={"/outputs/:id/output-products"} element={<Output/>}/>
+                    <Route path={"/users"} element={<Users/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

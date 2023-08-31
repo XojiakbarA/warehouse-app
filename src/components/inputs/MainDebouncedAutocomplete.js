@@ -2,7 +2,10 @@ import {Autocomplete, CircularProgress, TextField} from "@mui/material";
 import {useCallback, useEffect, useState} from "react";
 import {useDebounce} from "../../hooks/useDebounce";
 
-const MainDebouncedAutocomplete = ({ label, promise, onChange, value, loading, getOptionLabel, isOptionEqualToValue, error, helperText }) => {
+const MainDebouncedAutocomplete = ({
+    label, promise, onChange, value, loading,
+    getOptionLabel, isOptionEqualToValue, error, helperText, multiple
+}) => {
 
     const [inputValue, setInputValue] = useState("")
     const [fetchLoading, setFetchLoading] = useState(false)
@@ -15,10 +18,17 @@ const MainDebouncedAutocomplete = ({ label, promise, onChange, value, loading, g
         try {
             const { data } = await promise(debounce)
             const options = data.data
-            if (value) {
-                const isPresent = !!options.find(o => o.id === value.id)
-                if (!isPresent) {
-                    options.push(value)
+            if (multiple) {
+                if (value.length !== 0) {
+                    value.forEach(i => {
+                        const isPresent = !!options.find(o => o.id === i.id)
+                        if (!isPresent) options.push(i)
+                    })
+                }
+            } else {
+                if (value) {
+                    const isPresent = !!options.find(o => o.id === value.id)
+                    if (!isPresent) options.push(value)
                 }
             }
             setOptions(options)
@@ -26,7 +36,7 @@ const MainDebouncedAutocomplete = ({ label, promise, onChange, value, loading, g
             console.log(e)
         }
         setFetchLoading(false)
-    }, [promise, value])
+    }, [promise, value, multiple])
 
     const handleInputChange = (e, v) => {
         setInputValue(v)
@@ -40,6 +50,7 @@ const MainDebouncedAutocomplete = ({ label, promise, onChange, value, loading, g
 
     return (
         <Autocomplete
+            multiple={multiple}
             loading={fetchLoading}
             disabled={loading}
             renderInput={ (params) => (

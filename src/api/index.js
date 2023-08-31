@@ -184,3 +184,18 @@ export const updateOutputProduct = async (id, data) => {
 export const deleteOutputProduct = async (id) => {
     return await instance.delete("/output-products/" + id)
 }
+
+
+
+export const fetchUsers = async (params) => {
+    return await instance.get("/users", { params })
+}
+export const saveUser = async (data) => {
+    return await instance.post("/users", data)
+}
+export const updateUser = async (id, data) => {
+    return await instance.put("/users/" + id, data)
+}
+export const deleteUser = async (id) => {
+    return await instance.delete("/users/" + id)
+}
