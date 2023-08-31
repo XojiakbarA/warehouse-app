@@ -61,6 +61,8 @@ const Products = () => {
                 await getProducts()
                 toggleAddDialog()
                 resetForm()
+                setCategory(null)
+                setMeasurement(null)
                 setSuccess("Product created successfully")
             }
         } catch (e) {
@@ -76,12 +78,10 @@ const Products = () => {
             const res = await updateProduct(product?.id, formData)
             if (res.status === 200) {
                 await getProducts()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setProduct(null)
-                setCategory(null)
-                setMeasurement(null)
                 setSuccess("Product updated successfully")
             }
         } catch (e) {
@@ -96,11 +96,9 @@ const Products = () => {
             const res = await deleteProduct(product?.id)
             if (res.status === 202) {
                 await getProducts()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setProduct(null)
-                setCategory(null)
-                setMeasurement(null)
                 setSuccess("Product deleted successfully")
             }
         } catch (e) {
@@ -128,11 +126,23 @@ const Products = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setCategory(product.category)
+        setMeasurement(product.measurement)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setCategory(null)
+        setMeasurement(null)
+    }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setCategory(null)
+        setMeasurement(null)
     }
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
@@ -177,8 +187,8 @@ const Products = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(product),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -207,7 +217,7 @@ const Products = () => {
             <ProductDialog
                 title={"Edit Product"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={closeEditDialog}
                 initialValues={{
                     name: product?.name || "",
                     active: product?.active || false,
@@ -226,7 +236,7 @@ const Products = () => {
             <DeleteDialog
                 title={"Delete Product"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={product?.name || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}

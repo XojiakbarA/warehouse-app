@@ -57,6 +57,9 @@ const Outputs = () => {
                 await getOutputs()
                 toggleAddDialog()
                 resetForm()
+                setWarehouse(null)
+                setClient(null)
+                setCurrency(null)
                 setSuccess("Output created successfully")
             }
         } catch (e) {
@@ -71,13 +74,10 @@ const Outputs = () => {
             const res = await updateOutput(output?.id, data)
             if (res.status === 200) {
                 await getOutputs()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setOutput(null)
-                setWarehouse(null)
-                setClient(null)
-                setCurrency(null)
                 setSuccess("Output updated successfully")
             }
         } catch (e) {
@@ -92,12 +92,9 @@ const Outputs = () => {
             const res = await deleteOutput(output?.id)
             if (res.status === 202) {
                 await getOutputs()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setOutput(null)
-                setWarehouse(null)
-                setClient(null)
-                setCurrency(null)
                 setSuccess("Output deleted successfully")
             }
         } catch (e) {
@@ -127,12 +124,28 @@ const Outputs = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setWarehouse(output.warehouse)
+        setClient(output.client)
+        setCurrency(output.currency)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setWarehouse(null)
+        setClient(null)
+        setCurrency(null)
     }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setWarehouse(null)
+        setClient(null)
+        setCurrency(null)
+    }
+
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
     }
@@ -176,8 +189,8 @@ const Outputs = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(output),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -207,7 +220,7 @@ const Outputs = () => {
             <OutputDialog
                 title={"Edit Output"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={closeEditDialog}
                 initialValues={{
                     warehouseId: output?.warehouse?.id || null,
                     clientId: output?.client?.id || null,
@@ -227,7 +240,7 @@ const Outputs = () => {
             <DeleteDialog
                 title={"Delete Output"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={output?.code || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}

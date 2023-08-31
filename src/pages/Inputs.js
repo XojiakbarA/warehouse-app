@@ -57,6 +57,9 @@ const Inputs = () => {
                 await getInputs()
                 toggleAddDialog()
                 resetForm()
+                setWarehouse(null)
+                setSupplier(null)
+                setCurrency(null)
                 setSuccess("Input created successfully")
             }
         } catch (e) {
@@ -71,13 +74,10 @@ const Inputs = () => {
             const res = await updateInput(input?.id, data)
             if (res.status === 200) {
                 await getInputs()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setInput(null)
-                setWarehouse(null)
-                setSupplier(null)
-                setCurrency(null)
                 setSuccess("Input updated successfully")
             }
         } catch (e) {
@@ -92,12 +92,9 @@ const Inputs = () => {
             const res = await deleteInput(input?.id)
             if (res.status === 202) {
                 await getInputs()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setInput(null)
-                setWarehouse(null)
-                setSupplier(null)
-                setCurrency(null)
                 setSuccess("Input deleted successfully")
             }
         } catch (e) {
@@ -127,12 +124,28 @@ const Inputs = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setWarehouse(input.warehouse)
+        setSupplier(input.supplier)
+        setCurrency(input.currency)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setWarehouse(null)
+        setSupplier(null)
+        setCurrency(null)
     }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setWarehouse(null)
+        setSupplier(null)
+        setCurrency(null)
+    }
+
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
     }
@@ -176,8 +189,8 @@ const Inputs = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(input),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -207,7 +220,7 @@ const Inputs = () => {
             <InputDialog
                 title={"Edit Input"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={closeEditDialog}
                 initialValues={{
                     warehouseId: input?.warehouse?.id || null,
                     supplierId: input?.supplier?.id || null,
@@ -227,7 +240,7 @@ const Inputs = () => {
             <DeleteDialog
                 title={"Delete Input"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={input?.code || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}

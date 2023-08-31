@@ -13,7 +13,6 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Collapse from "@mui/material/Collapse";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
-import InputProductDialog from "../components/dialogs/InputProductDialog";
 import OutputInfo from "../components/cards/OutputInfo";
 import {outputProductColumns} from "../utils/columns/outputProduct";
 import OutputProductDialog from "../components/dialogs/OutputProductDialog";
@@ -64,6 +63,7 @@ const Output = () => {
                 await getOutputProducts()
                 toggleAddDialog()
                 resetForm()
+                setProduct(null)
                 setSuccess("Output Product created successfully")
             }
         } catch (e) {
@@ -78,11 +78,10 @@ const Output = () => {
             const res = await updateOutputProduct(outputProduct?.id, data)
             if (res.status === 200) {
                 await getOutputProducts()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setOutputProduct(null)
-                setProduct(null)
                 setSuccess("Output Product updated successfully")
             }
         } catch (e) {
@@ -97,10 +96,9 @@ const Output = () => {
             const res = await deleteOutputProduct(outputProduct?.id)
             if (res.status === 202) {
                 await getOutputProducts()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setOutputProduct(null)
-                setProduct(null)
                 setSuccess("Output Product deleted successfully")
             }
         } catch (e) {
@@ -126,12 +124,22 @@ const Output = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setProduct(outputProduct.product)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setProduct(null)
     }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setProduct(null)
+    }
+
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
     }
@@ -197,8 +205,8 @@ const Output = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(outputProduct),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -223,7 +231,7 @@ const Output = () => {
             <OutputProductDialog
                 title={"Edit Output Product"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={closeEditDialog}
                 initialValues={{
                     productId: outputProduct?.product?.id || null,
                     amount: outputProduct?.amount || "",
@@ -238,7 +246,7 @@ const Output = () => {
             <DeleteDialog
                 title={"Delete Output Product"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={outputProduct?.product?.name || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}

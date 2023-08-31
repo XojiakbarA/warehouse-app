@@ -57,6 +57,7 @@ const Categories = () => {
                 await getCategories()
                 toggleAddDialog()
                 resetForm()
+                setParentCategory(null)
                 setSuccess("Category created successfully")
             }
         } catch (e) {
@@ -71,11 +72,10 @@ const Categories = () => {
             const res = await updateCategory(category?.id, data)
             if (res.status === 200) {
                 await getCategories()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setCategory(null)
-                setParentCategory(null)
                 setSuccess("Category updated successfully")
             }
         } catch (e) {
@@ -90,10 +90,9 @@ const Categories = () => {
             const res = await deleteCategory(category?.id)
             if (res.status === 202) {
                 await getCategories()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setCategory(null)
-                setParentCategory(null)
                 setSuccess("Category deleted successfully")
             }
         } catch (e) {
@@ -106,11 +105,20 @@ const Categories = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setParentCategory(category.parentCategory)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setParentCategory(null)
+    }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setParentCategory(null)
     }
 
     const handleRowSelectionModelChange = (r) => {
@@ -169,8 +177,8 @@ const Categories = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(category),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -194,7 +202,7 @@ const Categories = () => {
             <CategoryDialog
                 title={"Edit Category"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={closeEditDialog}
                 initialValues={{
                     name: category?.name || "",
                     active: category?.active || false,
@@ -208,7 +216,7 @@ const Categories = () => {
             <DeleteDialog
                 title={"Delete Category"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={category?.name || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}

@@ -70,11 +70,10 @@ const Users = () => {
             const res = await updateUser(user?.id, data)
             if (res.status === 200) {
                 await getUsers()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setUser(null)
-                setWarehouses([])
                 setSuccess("User updated successfully")
             }
         } catch (e) {
@@ -89,10 +88,9 @@ const Users = () => {
             const res = await deleteUser(user?.id)
             if (res.status === 202) {
                 await getUsers()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setUser(null)
-                setWarehouses([])
                 setSuccess("User deleted successfully")
             }
         } catch (e) {
@@ -118,12 +116,22 @@ const Users = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setWarehouses(user.warehouses)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setWarehouses([])
     }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setWarehouses([])
+    }
+
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
     }
@@ -167,8 +175,8 @@ const Users = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(user),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -196,7 +204,7 @@ const Users = () => {
             <UserDialog
                 title={"Edit User"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={closeEditDialog}
                 initialValues={{
                     firstName: user?.firstName || "",
                     lastName: user?.lastName || "",
@@ -212,7 +220,7 @@ const Users = () => {
             <DeleteDialog
                 title={"Delete User"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={user?.firstName || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}

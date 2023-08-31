@@ -63,6 +63,7 @@ const Input = () => {
                 await getInputProducts()
                 toggleAddDialog()
                 resetForm()
+                setProduct(null)
                 setSuccess("Input Product created successfully")
             }
         } catch (e) {
@@ -77,11 +78,10 @@ const Input = () => {
             const res = await updateInputProduct(inputProduct?.id, data)
             if (res.status === 200) {
                 await getInputProducts()
-                toggleEditDialog()
+                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setInputProduct(null)
-                setProduct(null)
                 setSuccess("Input Product updated successfully")
             }
         } catch (e) {
@@ -96,10 +96,9 @@ const Input = () => {
             const res = await deleteInputProduct(inputProduct?.id)
             if (res.status === 202) {
                 await getInputProducts()
-                toggleDeleteDialog()
+                closeDeleteDialog()
                 setRowSelectionModel([])
                 setInputProduct(null)
-                setProduct(null)
                 setSuccess("Input Product deleted successfully")
             }
         } catch (e) {
@@ -125,12 +124,22 @@ const Input = () => {
     const toggleAddDialog = () => {
         setAddDialogOpen(addDialogOpen => !addDialogOpen)
     }
-    const toggleEditDialog = () => {
-        setEditDialogOpen(editDialogOpen => !editDialogOpen)
+    const openEditDialog = () => {
+        setEditDialogOpen(true)
+        setProduct(inputProduct.product)
     }
-    const toggleDeleteDialog = () => {
-        setDeleteDialogOpen(deleteDialogOpen => !deleteDialogOpen)
+    const closeEditDialog = () => {
+        setEditDialogOpen(false)
+        setProduct(null)
     }
+    const openDeleteDialog = () => {
+        setDeleteDialogOpen(true)
+    }
+    const closeDeleteDialog = () => {
+        setDeleteDialogOpen(false)
+        setProduct(null)
+    }
+
     const handlePaginationModelChange = (paginationModel) => {
         setSearchParams(paginationModel)
     }
@@ -196,8 +205,8 @@ const Input = () => {
                                 disabledAddButton: Boolean(error),
                                 disabled: !Boolean(inputProduct),
                                 onAddButtonClick: toggleAddDialog,
-                                onEditButtonClick: toggleEditDialog,
-                                onDeleteButtonClick: toggleDeleteDialog
+                                onEditButtonClick: openEditDialog,
+                                onDeleteButtonClick: openDeleteDialog
                             }
                         }}
                         hideFooter={loading || Boolean(error)}
@@ -223,7 +232,7 @@ const Input = () => {
             <InputProductDialog
                 title={"Edit Input Product"}
                 open={editDialogOpen}
-                onClose={toggleEditDialog}
+                onClose={openEditDialog}
                 initialValues={{
                     productId: inputProduct?.product?.id || null,
                     amount: inputProduct?.amount || "",
@@ -239,7 +248,7 @@ const Input = () => {
             <DeleteDialog
                 title={"Delete Input Product"}
                 open={deleteDialogOpen}
-                onClose={toggleDeleteDialog}
+                onClose={closeDeleteDialog}
                 resourceName={inputProduct?.product?.name || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}
