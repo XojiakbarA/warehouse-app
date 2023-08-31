@@ -118,6 +118,9 @@ export const updateProduct = async (id, data) => {
 export const deleteProduct = async (id) => {
     return await instance.delete("/products/" + id)
 }
+export const searchProductsByName = async (name) => {
+    return await instance.get("/products/search", { params: { name } })
+}
 
 
 
@@ -127,9 +130,6 @@ export const fetchInputs = async (params) => {
 export const fetchInput = async (id) => {
     return await instance.get("/inputs/" + id)
 }
-export const fetchInputProducts = async (id, params) => {
-    return await instance.get("/inputs/" + id + "/input-products", { params })
-}
 export const saveInput = async (data) => {
     return await instance.post("/inputs", data)
 }
@@ -138,4 +138,16 @@ export const updateInput = async (id, data) => {
 }
 export const deleteInput = async (id) => {
     return await instance.delete("/inputs/" + id)
+}
+export const fetchInputProducts = async (id, params) => {
+    return await instance.get("/inputs/" + id + "/input-products", { params })
+}
+export const saveInputProduct = async (data) => {
+    return await instance.post("/input-products", data)
+}
+export const updateInputProduct = async (id, data) => {
+    return await instance.put("/input-products/" + id, data)
+}
+export const deleteInputProduct = async (id) => {
+    return await instance.delete("/input-products/" + id)
 }

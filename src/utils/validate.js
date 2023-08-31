@@ -52,3 +52,18 @@ export const inputValidationSchema = yup.object({
         .number('Select Currency')
         .required('Currency is required')
 })
+
+export const inputProductValidationSchema = yup.object({
+    price: yup
+        .number('Enter Price')
+        .required('Price is required'),
+    expireDate: yup
+        .string('Enter Expire Date')
+        .required('Expire Date is required'),
+    productId: yup
+        .number('Select Product')
+        .required('Product is required'),
+    inputId: yup
+        .number('Select Input')
+        .required('Input is required')
+})
