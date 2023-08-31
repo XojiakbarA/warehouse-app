@@ -1,7 +1,7 @@
 import {Button} from "@mui/material";
 import {Link} from "react-router-dom";
 
-export const inputColumns = [
+export const outputColumns = [
     {
         field: 'id',
         headerName: 'ID',
@@ -28,9 +28,9 @@ export const inputColumns = [
         valueGetter: ({ value }) => value && value.name
     },
     {
-        field: 'supplier',
+        field: 'client',
         minWidth: 200,
-        headerName: "Supplier Name",
+        headerName: "Client Name",
         type: "string",
         filterable: false,
         sortable: false,
@@ -62,7 +62,7 @@ export const inputColumns = [
         sortable: false
     },
     {
-        field: 'inputProducts',
+        field: 'outputProducts',
         minWidth: 150,
         headerName: "Products",
         type: "string",
@@ -73,7 +73,7 @@ export const inputColumns = [
                 <Button
                     size={"small"}
                     component={Link}
-                    to={"/inputs/" + params.id + "/input-products"}
+                    to={"/outputs/" + params.id + "/output-products"}
                 >
                     View
                 </Button>

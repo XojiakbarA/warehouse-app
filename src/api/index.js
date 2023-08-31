@@ -103,6 +103,9 @@ export const updateClient = async (id, data) => {
 export const deleteClient = async (id) => {
     return await instance.delete("/clients/" + id)
 }
+export const searchClientsByName = async (name) => {
+    return await instance.get("/clients/search", { params: { name } })
+}
 
 
 
@@ -150,4 +153,34 @@ export const updateInputProduct = async (id, data) => {
 }
 export const deleteInputProduct = async (id) => {
     return await instance.delete("/input-products/" + id)
+}
+
+
+
+export const fetchOutputs = async (params) => {
+    return await instance.get("/outputs", { params })
+}
+export const fetchOutput = async (id) => {
+    return await instance.get("/outputs/" + id)
+}
+export const saveOutput = async (data) => {
+    return await instance.post("/outputs", data)
+}
+export const updateOutput = async (id, data) => {
+    return await instance.put("/outputs/" + id, data)
+}
+export const deleteOutput = async (id) => {
+    return await instance.delete("/outputs/" + id)
+}
+export const fetchOutputProducts = async (id, params) => {
+    return await instance.get("/outputs/" + id + "/output-products", { params })
+}
+export const saveOutputProduct = async (data) => {
+    return await instance.post("/output-products", data)
+}
+export const updateOutputProduct = async (id, data) => {
+    return await instance.put("/output-products/" + id, data)
+}
+export const deleteOutputProduct = async (id) => {
+    return await instance.delete("/output-products/" + id)
 }

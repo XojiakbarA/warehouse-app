@@ -10,6 +10,8 @@ import Clients from "./pages/Clients";
 import Products from "./pages/Products";
 import Inputs from "./pages/Inputs";
 import Input from "./pages/Input";
+import Outputs from "./pages/Outputs";
+import Output from "./pages/Output";
 
 function App() {
 
@@ -29,6 +31,8 @@ function App() {
                     <Route path={"/products"} element={<Products/>}/>
                     <Route path={"/inputs"} element={<Inputs/>}/>
                     <Route path={"/inputs/:id/input-products"} element={<Input/>}/>
+                    <Route path={"/outputs"} element={<Outputs/>}/>
+                    <Route path={"/outputs/:id/output-products"} element={<Output/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>
