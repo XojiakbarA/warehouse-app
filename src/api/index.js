@@ -199,3 +199,12 @@ export const updateUser = async (id, data) => {
 export const deleteUser = async (id) => {
     return await instance.delete("/users/" + id)
 }
+
+
+
+export const fetchDailyInputs = async () => {
+    return await instance.get("/dashboard/daily-inputs")
+}
+export const fetchDailyMostOutputProducts = async () => {
+    return await instance.get("/dashboard/daily-most-output-products")
+}
