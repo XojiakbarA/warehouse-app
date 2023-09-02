@@ -11,8 +11,11 @@ import DeleteDialog from "../components/dialogs/DeleteDialog";
 import ProductDialog from "../components/dialogs/ProductDialog";
 import {appendToFormData} from "../utils/helper";
 import {productColumns} from "../utils/columns/product";
+import {useMessage} from "../hooks/useMessage";
 
 const Products = () => {
+
+    const resourceName = "Product"
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -20,8 +23,7 @@ const Products = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [products, setProducts] = useState([])
     const [rowCount, setRowCount] = useState(0)
@@ -42,15 +44,10 @@ const Products = () => {
             setProducts(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
-            console.log(e)
-            if (e.code === "ERR_NETWORK") {
-                setError(e.message)
-            } else {
-                setError(e.response.data.message)
-            }
+            onError(e)
         }
         setLoading(false)
-    }, [paginationModel.page, paginationModel.pageSize])
+    }, [paginationModel.page, paginationModel.pageSize, onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
@@ -59,16 +56,15 @@ const Products = () => {
             const res = await saveProduct(formData)
             if (res.status === 201) {
                 await getProducts()
-                toggleAddDialog()
                 resetForm()
                 setCategory(null)
                 setMeasurement(null)
-                setSuccess("Product created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -78,16 +74,15 @@ const Products = () => {
             const res = await updateProduct(product?.id, formData)
             if (res.status === 200) {
                 await getProducts()
-                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setProduct(null)
-                setSuccess("Product updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        closeEditDialog()
         setLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -96,15 +91,14 @@ const Products = () => {
             const res = await deleteProduct(product?.id)
             if (res.status === 202) {
                 await getProducts()
-                closeDeleteDialog()
                 setRowSelectionModel([])
                 setProduct(null)
-                setSuccess("Product deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setLoading(false)
     }
 
@@ -159,10 +153,8 @@ const Products = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -184,14 +176,14 @@ const Products = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(error),
+                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(product),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(error)}
+                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

@@ -17,7 +17,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Box from "@mui/material/Box";
 
-const DailyMostOutputProducts = ({ setError }) => {
+const DailyMostOutputProducts = ({ onError }) => {
 
     const [collapse, setCollapse] = useState(false)
 
@@ -31,11 +31,10 @@ const DailyMostOutputProducts = ({ setError }) => {
             const { data } = await fetchDailyMostOutputProducts()
             setProducts(data.data)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [setError])
+    }, [onError])
 
     useEffect(() => {
         getDailyMostOutputProducts()

@@ -10,8 +10,11 @@ import DeleteDialog from "../components/dialogs/DeleteDialog";
 import CategoryDialog from "../components/dialogs/CategoryDialog";
 import MainAlert from "../components/alerts/MainAlert";
 import {categoryColumns} from "../utils/columns/category";
+import {useMessage} from "../hooks/useMessage";
 
 const Categories = () => {
+
+    const resourceName = "Category"
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -20,8 +23,7 @@ const Categories = () => {
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
 
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [categories, setCategories] = useState([])
     const [rowCount, setRowCount] = useState(0)
@@ -43,11 +45,10 @@ const Categories = () => {
             setCategories(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [paginationModel.page, paginationModel.pageSize])
+    }, [paginationModel.page, paginationModel.pageSize, onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
@@ -55,15 +56,14 @@ const Categories = () => {
             const res = await saveCategory(data)
             if (res.status === 201) {
                 await getCategories()
-                toggleAddDialog()
                 resetForm()
                 setParentCategory(null)
-                setSuccess("Category created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -76,12 +76,12 @@ const Categories = () => {
                 resetForm()
                 setRowSelectionModel([])
                 setCategory(null)
-                setSuccess("Category updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        closeEditDialog()
         setLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -90,15 +90,14 @@ const Categories = () => {
             const res = await deleteCategory(category?.id)
             if (res.status === 202) {
                 await getCategories()
-                closeDeleteDialog()
                 setRowSelectionModel([])
                 setCategory(null)
-                setSuccess("Category deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setLoading(false)
     }
 
@@ -149,10 +148,8 @@ const Categories = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -174,14 +171,14 @@ const Categories = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(error),
+                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(category),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(error)}
+                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

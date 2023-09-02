@@ -16,8 +16,11 @@ import Collapse from "@mui/material/Collapse";
 import {inputProductColumns} from "../utils/columns/inputProduct";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import InputProductDialog from "../components/dialogs/InputProductDialog";
+import {useMessage} from "../hooks/useMessage";
 
 const Input = () => {
+
+    const resourceName = "Input Product"
 
     const { id } = useParams()
     const [searchParams, setSearchParams] = useSearchParams()
@@ -26,8 +29,8 @@ const Input = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [inputProducts, setInputProducts] = useState([])
     const [rowCount, setRowCount] = useState(0)
@@ -49,11 +52,10 @@ const Input = () => {
             setInputProducts(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [paginationModel.page, paginationModel.pageSize, id])
+    }, [paginationModel.page, paginationModel.pageSize, id, onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
@@ -61,15 +63,14 @@ const Input = () => {
             const res = await saveInputProduct(data)
             if (res.status === 201) {
                 await getInputProducts()
-                toggleAddDialog()
                 resetForm()
                 setProduct(null)
-                setSuccess("Input Product created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -78,16 +79,15 @@ const Input = () => {
             const res = await updateInputProduct(inputProduct?.id, data)
             if (res.status === 200) {
                 await getInputProducts()
-                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setInputProduct(null)
-                setSuccess("Input Product updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        closeEditDialog()
         setLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -96,15 +96,14 @@ const Input = () => {
             const res = await deleteInputProduct(inputProduct?.id)
             if (res.status === 202) {
                 await getInputProducts()
-                closeDeleteDialog()
                 setRowSelectionModel([])
                 setInputProduct(null)
-                setSuccess("Input Product deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setLoading(false)
     }
 
@@ -177,10 +176,8 @@ const Input = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -202,14 +199,14 @@ const Input = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(error),
+                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(inputProduct),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(error)}
+                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

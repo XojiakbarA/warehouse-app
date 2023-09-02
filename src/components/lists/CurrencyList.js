@@ -11,7 +11,9 @@ import DeleteDialog from "../dialogs/DeleteDialog";
 import CurrencyListSkeleton from "../skeletons/CurrencyListSkeleton";
 import ListItem from "@mui/material/ListItem";
 
-const CurrencyList = ({ setError, setSuccess }) => {
+const CurrencyList = ({ onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess }) => {
+
+    const resourceName = "Currency"
 
     const [loading, setLoading] = useState(false)
     const [addLoading, setAddLoading] = useState(false)
@@ -31,11 +33,10 @@ const CurrencyList = ({ setError, setSuccess }) => {
             const { data } = await fetchCurrencies()
             setCurrencies(data.data)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [setError])
+    }, [onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setAddLoading(true)
@@ -43,14 +44,13 @@ const CurrencyList = ({ setError, setSuccess }) => {
             const res = await saveCurrency(data)
             if (res.status === 201) {
                 setCurrencies(i => ([ ...i, res.data.data ]))
-                toggleAddDialog()
                 resetForm()
-                setSuccess("Currency created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setAddLoading(false)
     }
     const handleEditSubmit = async (c) => {
@@ -63,11 +63,10 @@ const CurrencyList = ({ setError, setSuccess }) => {
                 const currency = res.data.data
                 const newCurrencies = currencies.filter(c => c.id !== currency.id)
                 setCurrencies([ ...newCurrencies, currency ])
-                setSuccess("Currency updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setCurrency(null)
         setUpdateLoading(false)
@@ -79,13 +78,12 @@ const CurrencyList = ({ setError, setSuccess }) => {
             if (res.status === 202) {
                 const newCurrencies = currencies.filter(c => c.id !== currency.id)
                 setCurrencies(newCurrencies)
-                closeDeleteDialog()
-                setSuccess("Category deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setDeleteLoading(false)
     }
 

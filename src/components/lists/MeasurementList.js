@@ -13,7 +13,9 @@ import { deleteMeasurement, fetchMeasurements, saveMeasurement, updateMeasuremen
 import AbstractDialog from "../dialogs/AbstractDialog";
 import DeleteDialog from "../dialogs/DeleteDialog";
 
-const MeasurementList = ({ setError, setSuccess }) => {
+const MeasurementList = ({ onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess }) => {
+
+    const resourceName = "Measurement"
 
     const [loading, setLoading] = useState(false)
     const [addLoading, setAddLoading] = useState(false)
@@ -34,11 +36,10 @@ const MeasurementList = ({ setError, setSuccess }) => {
             const { data } = await fetchMeasurements()
             setMeasurements(data.data)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [setError])
+    }, [onError])
 
     useEffect(() => {
         getMeasurements()
@@ -50,14 +51,13 @@ const MeasurementList = ({ setError, setSuccess }) => {
             const res = await saveMeasurement(data)
             if (res.status === 201) {
                 setMeasurements(i => ([ ...i, res.data.data ]))
-                toggleAddDialog()
                 resetForm()
-                setSuccess("Measurement created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setAddLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -68,14 +68,13 @@ const MeasurementList = ({ setError, setSuccess }) => {
                 const measurement = res.data.data
                 const newMeasurements = measurements.filter(m => m.id !== measurement.id)
                 setMeasurements([ ...newMeasurements, measurement ])
-                closeUpdateDialog()
                 resetForm()
-                setSuccess("Measurement updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        closeUpdateDialog()
         setUpdateLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -84,14 +83,13 @@ const MeasurementList = ({ setError, setSuccess }) => {
             const res = await deleteMeasurement(measurement?.id)
             if (res.status === 202) {
                 const newMeasurements = measurements.filter(m => m.id !== measurement.id)
-                setMeasurements(newMeasurements, measurement)
-                closeDeleteDialog()
-                setSuccess("Measurement deleted successfully")
+                setMeasurements(newMeasurements)
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setDeleteLoading(false)
     }
 

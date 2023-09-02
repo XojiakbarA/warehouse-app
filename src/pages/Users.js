@@ -10,8 +10,11 @@ import MainGridToolbar from "../components/data-grid/MainGridToolbar";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import UserDialog from "../components/dialogs/UserDialog";
 import {userColumns} from "../utils/columns/user";
+import {useMessage} from "../hooks/useMessage";
 
 const Users = () => {
+
+    const resourceName = "User"
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -19,8 +22,8 @@ const Users = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [users, setUsers] = useState([])
     const [rowCount, setRowCount] = useState(0)
@@ -41,11 +44,10 @@ const Users = () => {
             setUsers(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [paginationModel.page, paginationModel.pageSize])
+    }, [paginationModel.page, paginationModel.pageSize, onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
@@ -53,15 +55,14 @@ const Users = () => {
             const res = await saveUser(data)
             if (res.status === 201) {
                 await getUsers()
-                toggleAddDialog()
                 resetForm()
                 setWarehouses([])
-                setSuccess("User created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -70,16 +71,15 @@ const Users = () => {
             const res = await updateUser(user?.id, data)
             if (res.status === 200) {
                 await getUsers()
-                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setUser(null)
-                setSuccess("User updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        closeEditDialog()
         setLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -88,15 +88,14 @@ const Users = () => {
             const res = await deleteUser(user?.id)
             if (res.status === 202) {
                 await getUsers()
-                closeDeleteDialog()
                 setRowSelectionModel([])
                 setUser(null)
-                setSuccess("User deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setLoading(false)
     }
 
@@ -147,10 +146,8 @@ const Users = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -172,14 +169,14 @@ const Users = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(error),
+                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(user),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(error)}
+                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

@@ -69,7 +69,7 @@ export const productColumns = [
                         Photo
                     </Button>)
             } else {
-                return "No Photo"
+                return "-"
             }
         }
     },
