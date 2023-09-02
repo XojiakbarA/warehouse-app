@@ -72,6 +72,7 @@ const MainDebouncedAutocomplete = ({
                 />
             ) }
             options={options}
+            getOptionDisabled={option => !option.active}
             getOptionLabel={getOptionLabel ? getOptionLabel : (option) => option.name}
             isOptionEqualToValue={isOptionEqualToValue ? isOptionEqualToValue : (option, value) => option.id === value.id}
             inputValue={inputValue}
