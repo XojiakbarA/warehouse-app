@@ -14,7 +14,7 @@ const OutputProductDialog = ({
         errors, setFieldValue
     } = useFormik({
         initialValues,
-        validationSchema: outputProductValidationSchema,
+        validationSchema: () => outputProductValidationSchema(product?.remaining),
         enableReinitialize: true,
         onSubmit
     })

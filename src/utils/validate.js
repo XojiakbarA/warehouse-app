@@ -65,7 +65,11 @@ export const inputProductValidationSchema = yup.object({
         .required('Product is required'),
     inputId: yup
         .number('Select Input')
-        .required('Input is required')
+        .required('Input is required'),
+    amount: yup
+        .number('Enter Amount')
+        .required('Amount is required')
+        .positive('Amount must me positive')
 })
 
 export const outputValidationSchema = yup.object({
@@ -86,7 +90,7 @@ export const outputValidationSchema = yup.object({
         .required('Currency is required')
 })
 
-export const outputProductValidationSchema = yup.object({
+export const outputProductValidationSchema = (maxAmountValue) => yup.object({
     price: yup
         .number('Enter Price')
         .required('Price is required'),
@@ -95,7 +99,12 @@ export const outputProductValidationSchema = yup.object({
         .required('Product is required'),
     outputId: yup
         .number('Select Output')
-        .required('Output is required')
+        .required('Output is required'),
+    amount: yup
+        .number('Enter Amount')
+        .required('Amount is required')
+        .positive('Amount must me positive')
+        .max(maxAmountValue, 'Max value must be ' + maxAmountValue)
 })
 
 export const userCreateValidationSchema = yup.object({
