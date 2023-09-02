@@ -16,7 +16,7 @@ export const mainColumns = [
     },
     {
         field: 'active',
-        minWidth: 200,
+        minWidth: 100,
         headerName: "Active",
         type: "boolean",
         filterable: false,

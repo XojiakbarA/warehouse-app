@@ -6,6 +6,14 @@ import {Link} from "react-router-dom";
 export const productColumns = [
     ...mainColumns,
     {
+        field: 'remaining',
+        minWidth: 150,
+        headerName: "Remaining",
+        type: "number",
+        filterable: false,
+        sortable: false
+    },
+    {
         field: 'category',
         minWidth: 200,
         headerName: "Product Name",
@@ -43,7 +51,7 @@ export const productColumns = [
     },
     {
         field: 'photo',
-        minWidth: 200,
+        minWidth: 150,
         headerName: "Photo",
         type: "string",
         filterable: false,
