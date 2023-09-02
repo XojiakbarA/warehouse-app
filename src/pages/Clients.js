@@ -154,14 +154,12 @@ const Clients = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(client),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: toggleEditDialog,
                                 onDeleteButtonClick: toggleDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

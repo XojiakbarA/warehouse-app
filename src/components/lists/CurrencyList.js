@@ -10,11 +10,14 @@ import CurrencyDialog from "../dialogs/CurrencyDialog";
 import DeleteDialog from "../dialogs/DeleteDialog";
 import CurrencyListSkeleton from "../skeletons/CurrencyListSkeleton";
 import ListItem from "@mui/material/ListItem";
+import MainAlert from "../alerts/MainAlert";
+import { useMessage } from "../../hooks/useMessage";
 
-const CurrencyList = ({ onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess }) => {
+const CurrencyList = () => {
 
     const resourceName = "Currency"
 
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [addLoading, setAddLoading] = useState(false)
     const [updateLoading, setUpdateLoading] = useState(false)
@@ -105,6 +108,10 @@ const CurrencyList = ({ onError, onCreateSuccess, onUpdateSuccess, onDeleteSucce
 
     return (
         <Stack spacing={2}>
+            <MainAlert
+                message={message}
+                onClose={clearMessage}
+            />
             <List dense component={Paper}>
                 <ListSubheader>Currencies</ListSubheader>
                 {

@@ -8,13 +8,13 @@ import {useCallback, useEffect, useState} from "react";
 import {fetchOutput} from "../../api";
 import {useParams} from "react-router";
 import MainAlert from "../alerts/MainAlert";
+import { useMessage } from "../../hooks/useMessage";
 
 const OutputInfo = () => {
 
     const { id } = useParams()
 
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+    const { message, onError, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [output, setOutput] = useState(null)
 
@@ -24,11 +24,10 @@ const OutputInfo = () => {
             const { data } = await fetchOutput(id)
             setOutput(data.data)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [id])
+    }, [id, onError])
 
     useEffect(() => {
         getOutput()
@@ -38,10 +37,8 @@ const OutputInfo = () => {
         <Grid container spacing={1}>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs>

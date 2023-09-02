@@ -171,14 +171,12 @@ const Categories = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(category),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

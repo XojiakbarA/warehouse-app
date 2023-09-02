@@ -16,11 +16,14 @@ import IconButton from "@mui/material/IconButton";
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import Box from "@mui/material/Box";
+import MainAlert from "../alerts/MainAlert";
+import { useMessage } from "../../hooks/useMessage";
 
-const DailyMostOutputProducts = ({ onError }) => {
+const DailyMostOutputProducts = () => {
 
     const [collapse, setCollapse] = useState(false)
 
+    const { message, onError, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
 
     const [products, setProducts] = useState([])
@@ -43,6 +46,10 @@ const DailyMostOutputProducts = ({ onError }) => {
     return (
         <Stack spacing={2}>
             <Typography variant={"h5"} color={"primary"} marginTop>Daily Most Output Products</Typography>
+            <MainAlert
+                message={message}
+                onClose={clearMessage}
+            />
             {
                 loading
                 ?
@@ -60,6 +67,15 @@ const DailyMostOutputProducts = ({ onError }) => {
                                 </TableHead>
                                 <TableBody>
                                     {
+                                        !products.length
+                                        ?
+                                        <TableRow>
+                                            <TableCell component="th" scope="row">
+                                                    No data
+                                                </TableCell>
+                                                <TableCell align="right">No data</TableCell>
+                                        </TableRow>
+                                        :
                                         products.map((row) => (
                                             <TableRow
                                                 key={row.name}

@@ -6,9 +6,12 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import {useCallback, useEffect, useState} from "react";
 import {fetchDailyInputs} from "../../api";
+import MainAlert from "../alerts/MainAlert";
+import { useMessage } from "../../hooks/useMessage";
 
-const DailyInputs = ({ onError }) => {
+const DailyInputs = () => {
 
+    const { message, onError, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
 
     const [dailyInputs, setDailyInputs] = useState(null)
@@ -31,6 +34,10 @@ const DailyInputs = ({ onError }) => {
     return (
         <Stack spacing={2}>
             <Typography variant={"h5"} color={"primary"} marginTop>Daily Inputs</Typography>
+            <MainAlert
+                message={message}
+                onClose={clearMessage}
+            />
             <Card>
                 <List dense>
                     <ListSubheader>Total Cost</ListSubheader>
@@ -41,6 +48,12 @@ const DailyInputs = ({ onError }) => {
                                 <ListItemIcon>
                                     <CircularProgress/>
                                 </ListItemIcon>
+                            </ListItem>
+                            :
+                            !dailyInputs
+                            ?
+                            <ListItem>
+                                <ListItemText primary={"No data"}/>
                             </ListItem>
                             :
                             dailyInputs?.totalCost.map(t => (
@@ -66,6 +79,12 @@ const DailyInputs = ({ onError }) => {
                                 <ListItemIcon>
                                     <CircularProgress/>
                                 </ListItemIcon>
+                            </ListItem>
+                            :
+                            !dailyInputs
+                            ?
+                            <ListItem>
+                                <ListItemText primary={"No data"}/>
                             </ListItem>
                             :
                             dailyInputs?.totalAmount.map(t => (
