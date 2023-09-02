@@ -4,43 +4,25 @@ import IconButton from "@mui/material/IconButton";
 import CloseIcon from "@mui/icons-material/Close";
 import AlertTitle from "@mui/material/AlertTitle";
 
-const MainAlert = ({ error, onErrorCloseClick, success, onSuccessCloseClick }) => {
+const MainAlert = ({ message, onClose }) => {
     return (
         <>
-            <Collapse in={Boolean(error)}>
+            <Collapse in={Boolean(message.text)}>
                 <Alert
-                    severity="error"
+                    severity={message.error ? "error" : "success"}
                     action={
                         <IconButton
                             aria-label="close"
                             color="inherit"
                             size="small"
-                            onClick={onErrorCloseClick}
+                            onClick={onClose}
                         >
                             <CloseIcon fontSize="inherit" />
                         </IconButton>
                     }
                 >
-                    <AlertTitle>Error</AlertTitle>
-                    {error}
-                </Alert>
-            </Collapse>
-            <Collapse in={Boolean(success)}>
-                <Alert
-                    severity="success"
-                    action={
-                        <IconButton
-                            aria-label="close"
-                            color="inherit"
-                            size="small"
-                            onClick={onSuccessCloseClick}
-                        >
-                            <CloseIcon fontSize="inherit" />
-                        </IconButton>
-                    }
-                >
-                    <AlertTitle>Success</AlertTitle>
-                    {success}
+                    <AlertTitle>{ message.error ? "Error" : "Success" } {message.code}</AlertTitle>
+                    {message.text}
                 </Alert>
             </Collapse>
         </>

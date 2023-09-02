@@ -10,8 +10,11 @@ import MainGridToolbar from "../components/data-grid/MainGridToolbar";
 import DeleteDialog from "../components/dialogs/DeleteDialog";
 import {outputColumns} from "../utils/columns/output";
 import OutputDialog from "../components/dialogs/OutputDialogs";
+import {useMessage} from "../hooks/useMessage";
 
 const Outputs = () => {
+
+    const resourceName = "Output"
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -19,8 +22,8 @@ const Outputs = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [outputs, setOutputs] = useState([])
     const [rowCount, setRowCount] = useState(0)
@@ -43,11 +46,10 @@ const Outputs = () => {
             setOutputs(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [paginationModel.page, paginationModel.pageSize])
+    }, [paginationModel.page, paginationModel.pageSize, onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
@@ -55,17 +57,16 @@ const Outputs = () => {
             const res = await saveOutput(data)
             if (res.status === 201) {
                 await getOutputs()
-                toggleAddDialog()
                 resetForm()
                 setWarehouse(null)
                 setClient(null)
                 setCurrency(null)
-                setSuccess("Output created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -74,16 +75,15 @@ const Outputs = () => {
             const res = await updateOutput(output?.id, data)
             if (res.status === 200) {
                 await getOutputs()
-                closeEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setOutput(null)
-                setSuccess("Output updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        closeEditDialog()
         setLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -92,15 +92,14 @@ const Outputs = () => {
             const res = await deleteOutput(output?.id)
             if (res.status === 202) {
                 await getOutputs()
-                closeDeleteDialog()
                 setRowSelectionModel([])
                 setOutput(null)
-                setSuccess("Output deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        closeDeleteDialog()
         setLoading(false)
     }
 
@@ -161,10 +160,8 @@ const Outputs = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -186,14 +183,14 @@ const Outputs = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(error),
+                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(output),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(error)}
+                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

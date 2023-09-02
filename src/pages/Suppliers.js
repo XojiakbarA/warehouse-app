@@ -10,8 +10,11 @@ import {pageSizeOptions} from "../utils/constants";
 import MainAlert from "../components/alerts/MainAlert";
 import SupplierClientDialog from "../components/dialogs/SupplierClientDialog";
 import {supplierClientColumns} from "../utils/columns/supplierClient";
+import {useMessage} from "../hooks/useMessage";
 
 const Suppliers = () => {
+
+    const resourceName = "Supplier"
 
     const [searchParams, setSearchParams] = useSearchParams()
 
@@ -19,8 +22,7 @@ const Suppliers = () => {
         page: Number(searchParams.get("page")) || 0,
         pageSize: Number(searchParams.get("pageSize")) || pageSizeOptions[0]
     }
-    const [error, setError] = useState(null)
-    const [success, setSuccess] = useState(null)
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [suppliers, setSuppliers] = useState([])
     const [rowCount, setRowCount] = useState(0)
@@ -39,11 +41,10 @@ const Suppliers = () => {
             setSuppliers(data.data.content)
             setRowCount(data.data.totalElements)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [paginationModel.page, paginationModel.pageSize])
+    }, [paginationModel.page, paginationModel.pageSize, onError])
 
     const handleCreateSubmit = async (data, { resetForm }) => {
         setLoading(true)
@@ -51,14 +52,13 @@ const Suppliers = () => {
             const res = await saveSupplier(data)
             if (res.status === 201) {
                 await getSuppliers()
-                toggleAddDialog()
                 resetForm()
-                setSuccess("Supplier created successfully")
+                onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleAddDialog()
         setLoading(false)
     }
     const handleEditSubmit = async (data, { resetForm }) => {
@@ -67,16 +67,15 @@ const Suppliers = () => {
             const res = await updateSupplier(supplier?.id, data)
             if (res.status === 200) {
                 await getSuppliers()
-                toggleEditDialog()
                 resetForm()
                 setRowSelectionModel([])
                 setSupplier(null)
-                setSuccess("Supplier updated successfully")
+                onUpdateSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
+        toggleEditDialog()
         setLoading(false)
     }
     const handleDeleteClick = async () => {
@@ -85,15 +84,14 @@ const Suppliers = () => {
             const res = await deleteSupplier(supplier?.id)
             if (res.status === 202) {
                 await getSuppliers()
-                toggleDeleteDialog()
                 setRowSelectionModel([])
                 setSupplier(null)
-                setSuccess("Supplier deleted successfully")
+                onDeleteSuccess(res.status, resourceName)
             }
         } catch (e) {
-            console.log(e)
-            setError(e.response.data.message)
+            onError(e)
         }
+        toggleDeleteDialog()
         setLoading(false)
     }
 
@@ -132,10 +130,8 @@ const Suppliers = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -157,14 +153,14 @@ const Suppliers = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(error),
+                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(supplier),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: toggleEditDialog,
                                 onDeleteButtonClick: toggleDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(error)}
+                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

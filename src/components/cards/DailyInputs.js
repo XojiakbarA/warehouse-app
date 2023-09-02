@@ -7,7 +7,7 @@ import ListItemText from "@mui/material/ListItemText";
 import {useCallback, useEffect, useState} from "react";
 import {fetchDailyInputs} from "../../api";
 
-const DailyInputs = ({ setError }) => {
+const DailyInputs = ({ onError }) => {
 
     const [loading, setLoading] = useState(false)
 
@@ -19,11 +19,10 @@ const DailyInputs = ({ setError }) => {
             const { data } = await fetchDailyInputs()
             setDailyInputs(data.data)
         } catch (e) {
-            console.log(e)
-            setError(e.response?.data?.message)
+            onError(e)
         }
         setLoading(false)
-    }, [setError])
+    }, [onError])
 
     useEffect(() => {
         getDailyInputs()
