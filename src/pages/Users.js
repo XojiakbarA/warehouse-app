@@ -169,14 +169,12 @@ const Users = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(user),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

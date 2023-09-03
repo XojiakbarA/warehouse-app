@@ -131,10 +131,8 @@ const Warehouses = () => {
             </Grid>
             <Grid item xs={12}>
                 <MainAlert
-                    error={error}
-                    onErrorCloseClick={() => setError(null)}
-                    success={success}
-                    onSuccessCloseClick={() => setSuccess(null)}
+                    message={message}
+                    onClose={clearMessage}
                 />
             </Grid>
             <Grid item xs={12}>
@@ -156,14 +154,12 @@ const Warehouses = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(warehouse),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: toggleEditDialog,
                                 onDeleteButtonClick: toggleDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

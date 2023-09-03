@@ -183,14 +183,12 @@ const Inputs = () => {
                         slotProps={{
                             toolbar: {
                                 loading: loading,
-                                disabledAddButton: Boolean(message.error),
                                 disabled: !Boolean(input),
                                 onAddButtonClick: toggleAddDialog,
                                 onEditButtonClick: openEditDialog,
                                 onDeleteButtonClick: openDeleteDialog
                             }
                         }}
-                        hideFooter={loading || Boolean(message.error)}
                     />
                 </Paper>
             </Grid>

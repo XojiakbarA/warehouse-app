@@ -7,7 +7,7 @@ import {LoadingButton} from "@mui/lab";
 
 const CurrencyDialog = ({ open, title, loading, onClose, onSubmit, currency, setCurrency }) => {
 
-    const { handleSubmit, handleChange, handleBlur,
+    const { handleSubmit, handleChange, handleBlur, errors, touched,
         values, setFieldValue } = useFormik({
         initialValues: {
             active: true,
@@ -51,6 +51,8 @@ const CurrencyDialog = ({ open, title, loading, onClose, onSubmit, currency, set
                             loading={loading}
                             getOptionLabel={ (option) => option.currencyCode + " (" + option.currencyName + ")" }
                             isOptionEqualToValue={ (o, v) => o.currencyCode === v.currencyCode }
+                            error={ touched.currencyCode && Boolean(errors.currencyCode) }
+                            helperText={ touched.currencyCode && errors.currencyCode }
                         />
                         <Stack direction={"row"} spacing={2}>
                             <Button onClick={onClose} disabled={loading}>Cancel</Button>

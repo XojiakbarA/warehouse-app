@@ -44,6 +44,7 @@ const MainAutocomplete = ({ label, promise, onChange, value, loading, getOptionL
                 />
             ) }
             options={options}
+            getOptionDisabled={option => !option.active}
             getOptionLabel={getOptionLabel ? getOptionLabel : (option) => option.name}
             isOptionEqualToValue={isOptionEqualToValue ? isOptionEqualToValue : (option, value) => option.id === value.id}
             value={value}

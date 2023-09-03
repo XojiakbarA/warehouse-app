@@ -12,11 +12,14 @@ import MeasurementListSkeleton from "../skeletons/MeasurementListSkeleton";
 import { deleteMeasurement, fetchMeasurements, saveMeasurement, updateMeasurement } from "../../api";
 import AbstractDialog from "../dialogs/AbstractDialog";
 import DeleteDialog from "../dialogs/DeleteDialog";
+import MainAlert from "../alerts/MainAlert";
+import { useMessage } from "../../hooks/useMessage";
 
-const MeasurementList = ({ onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess }) => {
+const MeasurementList = () => {
 
     const resourceName = "Measurement"
 
+    const { message, onError, onCreateSuccess, onUpdateSuccess, onDeleteSuccess, clearMessage } = useMessage()
     const [loading, setLoading] = useState(false)
     const [addLoading, setAddLoading] = useState(false)
     const [updateLoading, setUpdateLoading] = useState(false)
@@ -115,6 +118,10 @@ const MeasurementList = ({ onError, onCreateSuccess, onUpdateSuccess, onDeleteSu
 
     return (
         <Stack spacing={2}>
+            <MainAlert
+                message={message}
+                onClose={clearMessage}
+            />
             <List dense component={Paper}>
                 <ListSubheader>Measurements</ListSubheader>
                 {
