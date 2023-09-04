@@ -94,9 +94,9 @@ export const outputProductValidationSchema = (maxAmountValue) => yup.object({
     price: yup
         .number('Enter Price')
         .required('Price is required'),
-    productId: yup
-        .number('Select Product')
-        .required('Product is required'),
+    inputProductId: yup
+        .number('Select Input Product')
+        .required('Input Product is required'),
     outputId: yup
         .number('Select Output')
         .required('Output is required'),

@@ -40,7 +40,7 @@ const Output = () => {
 
     const [rowSelectionModel, setRowSelectionModel] = useState([])
     const [outputProduct, setOutputProduct] = useState(null)
-    const [product, setProduct] = useState(null)
+    const [inputProduct, setInputProduct] = useState(null)
 
     const [collapse, setCollapse] = useState(true)
 
@@ -64,7 +64,7 @@ const Output = () => {
             if (res.status === 201) {
                 await getOutputProducts()
                 resetForm()
-                setProduct(null)
+                setInputProduct(null)
                 onCreateSuccess(res.status, resourceName)
             }
         } catch (e) {
@@ -111,12 +111,12 @@ const Output = () => {
         setRowSelectionModel(i => {
             if (i[0] === r[0]) {
                 setOutputProduct(null)
-                setProduct(null)
+                setInputProduct(null)
                 return []
             }
             const outputProduct = outputProducts.find(w => w.id === r[0])
             setOutputProduct(outputProduct || null)
-            setProduct(outputProduct?.product || null)
+            setInputProduct(outputProduct?.inputProduct || null)
             return r
         })
     }
@@ -125,18 +125,18 @@ const Output = () => {
     }
     const openEditDialog = () => {
         setEditDialogOpen(true)
-        setProduct(outputProduct.product)
+        setInputProduct(outputProduct.inputProduct)
     }
     const closeEditDialog = () => {
         setEditDialogOpen(false)
-        setProduct(null)
+        setInputProduct(null)
     }
     const openDeleteDialog = () => {
         setDeleteDialogOpen(true)
     }
     const closeDeleteDialog = () => {
         setDeleteDialogOpen(false)
-        setProduct(null)
+        setInputProduct(null)
     }
 
     const handlePaginationModelChange = (paginationModel) => {
@@ -213,36 +213,36 @@ const Output = () => {
                 open={addDialogOpen}
                 onClose={toggleAddDialog}
                 initialValues={{
-                    productId: null,
+                    inputProductId: null,
                     amount: "",
                     price: "",
                     outputId: id
                 }}
                 onSubmit={handleCreateSubmit}
                 loading={loading}
-                product={product}
-                setProduct={setProduct}
+                inputProduct={inputProduct}
+                setInputProduct={setInputProduct}
             />
             <OutputProductDialog
                 title={"Edit Output Product"}
                 open={editDialogOpen}
                 onClose={closeEditDialog}
                 initialValues={{
-                    productId: outputProduct?.product?.id || null,
+                    inputProductId: outputProduct?.inputProduct?.id || null,
                     amount: outputProduct?.amount || "",
                     price: outputProduct?.price || "",
                     outputId: outputProduct?.output?.id || null
                 }}
                 onSubmit={handleEditSubmit}
                 loading={loading}
-                product={product}
-                setProduct={setProduct}
+                inputProduct={inputProduct}
+                setInputProduct={setInputProduct}
             />
             <DeleteDialog
                 title={"Delete Output Product"}
                 open={deleteDialogOpen}
                 onClose={closeDeleteDialog}
-                resourceName={outputProduct?.product?.name || ""}
+                resourceName={outputProduct?.inputProduct?.product?.name || ""}
                 onDeleteClick={handleDeleteClick}
                 loading={loading}
             />

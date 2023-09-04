@@ -154,6 +154,9 @@ export const updateInputProduct = async (id, data) => {
 export const deleteInputProduct = async (id) => {
     return await instance.delete("/input-products/" + id)
 }
+export const searchInputProductsByProductName = async (productName) => {
+    return await instance.get("/input-products/search", { params: { productName } })
+}
 
 
 

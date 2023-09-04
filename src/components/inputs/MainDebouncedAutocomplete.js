@@ -4,7 +4,7 @@ import {useDebounce} from "../../hooks/useDebounce";
 
 const MainDebouncedAutocomplete = ({
     label, promise, onChange, value, loading,
-    getOptionLabel, isOptionEqualToValue, error, helperText, multiple
+    getOptionDisabled, getOptionLabel, isOptionEqualToValue, error, helperText, multiple
 }) => {
 
     const [inputValue, setInputValue] = useState("")
@@ -72,7 +72,7 @@ const MainDebouncedAutocomplete = ({
                 />
             ) }
             options={options}
-            getOptionDisabled={option => !option.active}
+            getOptionDisabled={getOptionDisabled ? getOptionDisabled : option => !option.active}
             getOptionLabel={getOptionLabel ? getOptionLabel : (option) => option.name}
             isOptionEqualToValue={isOptionEqualToValue ? isOptionEqualToValue : (option, value) => option.id === value.id}
             inputValue={inputValue}

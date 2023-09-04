@@ -13,7 +13,7 @@ export const outputProductColumns = [
         type: "string",
         filterable: false,
         sortable: false,
-        valueGetter: ({ row }) => row.product && row.product.name
+        valueGetter: ({ row }) => row.inputProduct && row.inputProduct.product.name
     },
     {
         field: 'amount',

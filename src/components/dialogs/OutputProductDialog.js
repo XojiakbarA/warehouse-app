@@ -2,30 +2,30 @@ import {Button, Dialog, DialogContent, DialogTitle, Stack, TextField} from "@mui
 import {LoadingButton} from "@mui/lab";
 import {useFormik} from "formik";
 import {outputProductValidationSchema} from "../../utils/validate";
-import {searchProductsByName} from "../../api";
+import {searchInputProductsByProductName} from "../../api";
 import MainDebouncedAutocomplete from "../inputs/MainDebouncedAutocomplete";
 
 const OutputProductDialog = ({
                                 title, open, onClose, initialValues, onSubmit, loading,
-                                product, setProduct
+                                inputProduct, setInputProduct
                             }) => {
 
     const {handleSubmit, getFieldProps, touched,
         errors, setFieldValue
     } = useFormik({
         initialValues,
-        validationSchema: () => outputProductValidationSchema(product?.remaining),
+        validationSchema: () => outputProductValidationSchema(inputProduct?.remaining),
         enableReinitialize: true,
         onSubmit
     })
 
     const handleProductChange = (e, v) => {
         if (v === null) {
-            setProduct(null)
-            setFieldValue("productId", null)
+            setInputProduct(null)
+            setFieldValue("inputProductId", null)
         } else {
-            setProduct(v)
-            setFieldValue("productId", v.id)
+            setInputProduct(v)
+            setFieldValue("inputProductId", v.id)
         }
     }
 
@@ -36,13 +36,15 @@ const OutputProductDialog = ({
                 <form onSubmit={handleSubmit}>
                     <Stack spacing={2}>
                         <MainDebouncedAutocomplete
-                            label={"Product"}
-                            promise={searchProductsByName}
+                            label={"Input Product"}
+                            promise={searchInputProductsByProductName}
                             onChange={handleProductChange}
-                            value={product}
+                            value={inputProduct}
                             loading={loading}
-                            error={ touched.productId && Boolean(errors.productId) }
-                            helperText={ touched.productId && errors.productId }
+                            getOptionDisabled={o => o.remaining === 0}
+                            getOptionLabel={o => o.id + " " + o.product.name + " " + new Date(o.expireDate).toLocaleString()}
+                            error={ touched.inputProductId && Boolean(errors.inputProductId) }
+                            helperText={ touched.inputProductId && errors.inputProductId }
                         />
                         <TextField
                             disabled={loading}

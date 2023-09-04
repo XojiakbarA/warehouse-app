@@ -24,6 +24,14 @@ export const inputProductColumns = [
         sortable: false
     },
     {
+        field: 'remaining',
+        minWidth: 150,
+        headerName: "Remaining",
+        type: "number",
+        filterable: false,
+        sortable: false
+    },
+    {
         field: 'price',
         minWidth: 200,
         headerName: "Price",
