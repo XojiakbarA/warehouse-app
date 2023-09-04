@@ -150,28 +150,6 @@ const Input = () => {
     return (
         <Grid container spacing={2}>
             <Grid item xs={12}>
-                <Stack direction={"row"} spacing={4} alignItems={"center"}>
-                    <Typography variant={"h4"} color={"primary"} marginTop>Input</Typography>
-                    <IconButton
-                        color={"primary"}
-                        onClick={ () => setCollapse(i => !i) }
-                    >
-                        {
-                            collapse
-                            ?
-                            <KeyboardArrowUpIcon fontSize={"large"} color={"inherit"}/>
-                            :
-                            <KeyboardArrowDownIcon fontSize={"large"} color={"inherit"}/>
-                        }
-                    </IconButton>
-                </Stack>
-            </Grid>
-            <Grid item xs={12}>
-                <Collapse in={collapse}>
-                    <InputInfo/>
-                </Collapse>
-            </Grid>
-            <Grid item xs={12}>
                 <Typography variant={"h4"} color={"primary"} marginTop>Input Products</Typography>
             </Grid>
             <Grid item xs={12}>
@@ -207,6 +185,28 @@ const Input = () => {
                         }}
                     />
                 </Paper>
+            </Grid>
+            <Grid item xs={12}>
+                <Stack direction={"row"} spacing={4} alignItems={"center"}>
+                    <Typography variant={"h4"} color={"primary"} marginTop>Input</Typography>
+                    <IconButton
+                        color={"primary"}
+                        onClick={ () => setCollapse(i => !i) }
+                    >
+                        {
+                            collapse
+                                ?
+                                <KeyboardArrowUpIcon fontSize={"large"} color={"inherit"}/>
+                                :
+                                <KeyboardArrowDownIcon fontSize={"large"} color={"inherit"}/>
+                        }
+                    </IconButton>
+                </Stack>
+            </Grid>
+            <Grid item xs={12}>
+                <Collapse in={collapse}>
+                    <InputInfo/>
+                </Collapse>
             </Grid>
             <InputProductDialog
                 title={"Add Input Product"}

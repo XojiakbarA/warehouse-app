@@ -4,6 +4,12 @@ const instance = axios.create({
     baseURL: "http://localhost:8080"
 })
 
+export const fetchUserNotifications = async () => {
+    return await instance.get("/users/1/notifications")
+}
+
+
+
 export const fetchWarehouses = async (params) => {
     return await instance.get("/warehouses", { params })
 }
