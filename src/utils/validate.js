@@ -6,6 +6,13 @@ export const mainValidationSchema = yup.object({
         .required('Name is required')
 })
 
+export const remindBeforeValidationSchema = yup.object({
+    value: yup
+        .number('Enter Days')
+        .required('Days are required')
+        .positive('Days must me positive')
+})
+
 export const currencyValidationSchema = yup.object({
     currencyCode: yup
         .string('Select Currency')

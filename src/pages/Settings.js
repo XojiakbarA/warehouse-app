@@ -2,6 +2,7 @@ import {Grid} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import CurrencyList from "../components/lists/CurrencyList";
 import MeasurementList from "../components/lists/MeasurementList";
+import RemindBeforeList from "../components/lists/RemindBeforeList";
 
 const Settings = () => {
 
@@ -15,6 +16,9 @@ const Settings = () => {
             </Grid>
             <Grid item xs={4}>
                 <MeasurementList/>
+            </Grid>
+            <Grid item xs={4}>
+                <RemindBeforeList/>
             </Grid>
         </Grid>
     )

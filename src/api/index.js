@@ -211,3 +211,16 @@ export const fetchDailyInputs = async () => {
 export const fetchDailyMostOutputProducts = async () => {
     return await instance.get("/dashboard/daily-most-output-products")
 }
+
+export const fetchRemindBeforeOptions = async () => {
+    return await instance.get("/remind-before-options")
+}
+export const saveRemindBeforeOption = async (data) => {
+    return await instance.post("/remind-before-options", data)
+}
+export const updateRemindBeforeOption = async (id) => {
+    return await instance.put("/remind-before-options/" + id)
+}
+export const deleteRemindBeforeOption = async (id) => {
+    return await instance.delete("/remind-before-options/" + id)
+}
