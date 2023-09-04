@@ -13,6 +13,7 @@ import Input from "./pages/Input";
 import Outputs from "./pages/Outputs";
 import Output from "./pages/Output";
 import Users from "./pages/Users";
+import NearToExpireInputProducts from "./pages/NearToExpireInputProducts";
 
 function App() {
 
@@ -35,6 +36,7 @@ function App() {
                     <Route path={"/outputs"} element={<Outputs/>}/>
                     <Route path={"/outputs/:id/output-products"} element={<Output/>}/>
                     <Route path={"/users"} element={<Users/>}/>
+                    <Route path={"/near-to-expire/input-products"} element={<NearToExpireInputProducts/>}/>
                 </Route>
             </Routes>
         </ThemeProvider>

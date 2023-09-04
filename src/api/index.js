@@ -211,6 +211,14 @@ export const fetchDailyInputs = async () => {
 export const fetchDailyMostOutputProducts = async () => {
     return await instance.get("/dashboard/daily-most-output-products")
 }
+export const fetchCountNearToExpireInputProducts = async () => {
+    return await instance.get("/dashboard/near-to-expire/count")
+}
+export const fetchNearToExpireInputProducts = async () => {
+    return await instance.get("/dashboard/near-to-expire/input-products")
+}
+
+
 
 export const fetchRemindBeforeOptions = async () => {
     return await instance.get("/remind-before-options")
